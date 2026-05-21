@@ -41,12 +41,18 @@ Live Shopify mode:
 - `PRODUCT_TARGET_URL=http://shopify-admin-target:8088`
 - Compose profile: `shopify-live`
 
+Local adapter auth modes:
+
+- `SHOPIFY_ADMIN_AUTH_MODE=token`: default runtime mode using `SHOPIFY_ADMIN_ACCESS_TOKEN`.
+- `SHOPIFY_ADMIN_AUTH_MODE=cli`: local development mode using a prior `shopify store auth` session on the developer machine. Use this only for local operator-approved smoke tests; do not treat CLI login as production runtime credentials.
+
 ## Shopify Credentials
 
 Put real values only in a private `.env` file:
 
 ```sh
 SHOPIFY_SHOP_DOMAIN=your-shop.myshopify.com
+SHOPIFY_ADMIN_AUTH_MODE=token
 SHOPIFY_ADMIN_ACCESS_TOKEN=<private-shopify-admin-token>
 SHOPIFY_API_VERSION=2026-04
 SHOPIFY_DELETE_MODE=archive
@@ -75,8 +81,10 @@ Create and update events are treated as upserts.
 The live adapter uses Shopify Admin GraphQL `productSet` and identifies projected products by the PIM product ID stored as a custom metafield:
 
 - namespace: `pim`
-- key: `product_id`
+- key: `external_id`
 - value: the repo projection `pim_product_id`
+
+This custom ID metafield uses Shopify metafield type `id` with unique values enabled. Additional projection metadata is written after the product upsert with `metafieldsSet`, including a human-readable `pim.product_id` metafield, `context_architecture.projection_id`, `context_architecture.metaobjects_json`, and simple detail metafields.
 
 Native Shopify fields are populated from the governed projection:
 
@@ -126,6 +134,14 @@ npm run akeneo:seed-rug
 ```
 
 The active n8n workflow continues to call `product-projection-service`; the projection service chooses the target through environment configuration.
+
+For a host-local smoke test that uses the Akeneo sample event, the projection service, the live adapter, and Shopify CLI store auth without starting Docker Compose:
+
+```sh
+npm run shopify:project-sample
+```
+
+The command reads private `.env` values first and can fall back to ignored `.env.agent` store/auth settings for local CLI mode.
 
 ## Required Review
 

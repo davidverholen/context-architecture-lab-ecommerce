@@ -7,26 +7,24 @@ No source-copy failure was recorded during initial scaffold creation. The Contex
 - Should the live Shopify adapter remain on Admin GraphQL `2026-04`, or should the repo pin a different supported version after shop/app verification?
 - Which additional Admin API mutation shapes are needed after the first `productSet` upsert and archive-by-default removal adapter?
 - Which current product taxonomy or category behavior should the rug projection use?
-- How should product status, publication, and sales channel behavior be represented?
-- Is the PIM source identifier custom metafield (`pim.product_id`) sufficient for all Shopify lookup and migration scenarios?
+- How should product status, publication, and sales channel behavior be represented before a product becomes storefront-visible?
+- Is the dedicated Shopify custom ID metafield (`pim.external_id`, type `id`) sufficient for all lookup and migration scenarios, while `pim.product_id` remains a human-readable source reference?
 - How should handle uniqueness and update semantics be handled?
 - Which metafield types should be used for numeric units, country codes, lists, and Storefront visibility?
 - Which metaobject definitions, reference patterns, localization behavior, and Storefront access rules apply?
 - Which current Shopify limits or constraints affect rug projection?
-- Which Shopify app scopes are the minimum needed beyond `read_products` and `write_products` for the live adapter as it evolves?
+- Which Shopify app scopes are the minimum needed beyond `read_products` and `write_products` for the live adapter and Storefront token setup as they evolve?
 - Should Akeneo product removal permanently delete Shopify products in any environment, or should archive remain the only allowed policy?
 
 These questions require official Shopify documentation verification before expanding the live Shopify adapter. Detailed projection notes live in [pim-to-shopify-mapping.table.md](../../examples/products/pim-to-shopify-mapping.table.md) and [Shopify Live Sync](../commerce/shopify-live-sync.md).
 
 ## Hydrogen
 
-- Which Hydrogen scaffold path and package strategy should the repo use when storefront implementation begins?
-- Should Hydrogen start against Mock.shop, a Shopify development/basic shop, or a project-specific storefront mock?
+- When should the Hydrogen scaffold switch from Mock.shop/default local data to the configured Shopify shop?
 - Which Storefront API version should the future Hydrogen app pin after shop/channel verification?
-- Which product, collection, cart, search, policy, and content routes belong in MVP storefront scope?
-- Which Hydrogen environment variables should be public, private, or forbidden in committed examples?
+- Which projected Shopify products should be made active and published for storefront smoke tests?
 - Should the MVP use the Hydrogen channel and Oxygen preview deployments, or keep deployment deferred?
-- What is the review gate for Customer Account API, checkout, analytics attribution, and customer data behavior?
+- What is the exact review gate and approval evidence for enabling checkout redirects, Customer Account API, analytics attribution, and customer data behavior?
 
 These questions require official Shopify documentation verification before storefront implementation. The current boundary interpretation lives in [Hydrogen Storefront](../commerce/hydrogen-storefront.md).
 

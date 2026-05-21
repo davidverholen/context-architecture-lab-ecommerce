@@ -20,7 +20,7 @@ MVP v0.1 provides:
 - Optional local Akeneo CE webhook flow through `akeneo-event-bridge`, n8n, `product-projection-service`, and `mock-shopify`.
 - Optional live Shopify Admin target adapter for a development/basic shop, configured only through private environment variables.
 - Optional Shopify Admin MCP helper for explicit operator/agent inspection, configured only through ignored `.env.agent`.
-- Optional Hydrogen storefront boundary for customer-facing Storefront API consumption, governed by [ADR-007](docs/decisions/ADR-007-hydrogen-storefront-boundary.md).
+- Optional Hydrogen storefront scaffold under [apps/storefront](apps/storefront/) for customer-facing Storefront API consumption, governed by [ADR-007](docs/decisions/ADR-007-hydrogen-storefront-boundary.md).
 
 ## Context Architecture Model
 
@@ -119,7 +119,13 @@ Optional live Shopify sync is documented in [docs/commerce/shopify-live-sync.md]
 
 Optional operator access to Shopify Admin GraphQL is documented in [docs/commerce/shopify-admin-agent-access.md](docs/commerce/shopify-admin-agent-access.md). Use `.env.agent`, not `.env`, and treat mutations as review-gated product projection work.
 
-Optional Hydrogen storefront scope is documented in [docs/commerce/hydrogen-storefront.md](docs/commerce/hydrogen-storefront.md). A future storefront scaffold should keep Storefront API tokens outside source control and must not perform Shopify Admin API product writes.
+Optional Hydrogen storefront scope is documented in [docs/commerce/hydrogen-storefront.md](docs/commerce/hydrogen-storefront.md). The local scaffold lives in [apps/storefront](apps/storefront/), keeps Storefront API tokens outside source control, and must not perform Shopify Admin API product writes.
+
+Run the optional local Hydrogen storefront:
+
+```sh
+npm run storefront:dev
+```
 
 Example local product projection request:
 
@@ -138,7 +144,7 @@ Current readiness means each custom service owns a service-specific Dockerfile, 
 ## Future Extensions
 
 - Shopify Dev Store integration hardening: credential check script, idempotency store, metaobject lifecycle, and safer operator controls.
-- Hydrogen scaffold and local storefront route implementation behind ADR-007.
+- Hydrogen storefront hardening behind ADR-007, including real Storefront token setup, publication behavior, and checkout/customer-data review.
 - Google Cloud Run deployment.
 - More complete Akeneo rug catalog seed data and webhook reconciliation.
 - Paperclip Teams as an optional governance and coordination layer.

@@ -51,7 +51,7 @@ The lab uses a small set of independently understandable pieces:
 - n8n workflow JSON for visible integration flow skeletons.
 - Product export/projection contracts before real Akeneo Event Platform or Shopify integration.
 - A local Akeneo webhook bridge before any production-like PIM event adapter.
-- Hydrogen storefront scope before customer account, checkout, or deployment behavior.
+- Hydrogen storefront scaffold before customer account, checkout, or deployment behavior.
 
 ## Context Boundary Summary
 

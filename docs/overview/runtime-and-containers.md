@@ -39,7 +39,7 @@ flowchart LR
 
   OptionalAkeneo["optional Akeneo CE\nignored .local/akeneo/pim project"]
   Shopify["optional Shopify shop\ncustomer-facing projection"]
-  Hydrogen["optional Hydrogen storefront\nfuture scaffold"]
+  Hydrogen["apps/storefront\noptional Hydrogen storefront"]
 
   Samples["examples/\nJSON samples"]
   Schemas["schemas/\nJSON Schema contracts"]
@@ -86,7 +86,7 @@ flowchart LR
 | `mock-shopify` | Receive Shopify-style product projection dumps before real Shopify integration. | `GET /health` | `services/mock-shopify/Dockerfile` |
 | `shopify-admin-target` | Optional live Shopify Admin GraphQL adapter for product projection upserts and removals. | `GET /health` | `services/shopify-admin-target/Dockerfile` |
 
-Hydrogen is documented as an optional storefront boundary in [Hydrogen Storefront](../commerce/hydrogen-storefront.md). It does not have a service directory yet; adding a scaffold is a separate ADR-007 implementation step.
+Hydrogen is documented as an optional storefront boundary in [Hydrogen Storefront](../commerce/hydrogen-storefront.md). The scaffold lives under [apps/storefront](../../apps/storefront/) and is not part of the default Docker Compose stack.
 
 ## Workflow Lifecycle
 

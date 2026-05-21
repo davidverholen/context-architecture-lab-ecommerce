@@ -5,14 +5,22 @@ import {
 } from "../../shared/schemas.js";
 import {
   DEFAULT_SHOPIFY_API_VERSION,
+  METAFIELDS_SET_MUTATION,
+  METAFIELD_DEFINITION_CREATE_MUTATION,
+  PIM_PRODUCT_ID_DEFINITION_QUERY,
   PRODUCT_BY_IDENTIFIER_QUERY,
   PRODUCT_DELETE_MUTATION,
   PRODUCT_SET_MUTATION,
+  buildPimProductIdDefinitionCreateVariables,
+  buildPimProductIdDefinitionLookupVariables,
   buildProductArchiveVariables,
   buildProductDeleteVariables,
   buildProductLookupVariables,
+  buildProductMetafieldsSetVariables,
   buildProductSetVariables,
-  shopifyGraphqlEndpoint,
+  normalizeShopifyAdminAuthMode,
+  shopifyAdminGraphql,
+  type ShopifyAdminAuthMode,
   type ShopifyDeleteMode
 } from "../../shared/shopify-admin-target.js";
 
@@ -20,6 +28,7 @@ type BuildAppOptions = {
   shopDomain?: string;
   accessToken?: string;
   apiVersion?: string;
+  authMode?: ShopifyAdminAuthMode;
   deleteMode?: ShopifyDeleteMode;
   graphql?: (query: string, variables: unknown) => Promise<unknown>;
 };
@@ -36,12 +45,21 @@ type ProductNode = {
   status?: string;
 };
 
+type MetafieldDefinitionNode = {
+  id: string;
+  capabilities?: {
+    uniqueValues?: {
+      enabled?: boolean;
+    };
+  };
+};
+
 function configError() {
   return {
     status: "rejected",
     error: {
       code: "SHOPIFY_CONFIG_MISSING",
-      message: "SHOPIFY_SHOP_DOMAIN and SHOPIFY_ADMIN_ACCESS_TOKEN are required for live Shopify sync."
+      message: "SHOPIFY_SHOP_DOMAIN is required. SHOPIFY_ADMIN_ACCESS_TOKEN is required when SHOPIFY_ADMIN_AUTH_MODE=token."
     }
   };
 }
@@ -74,6 +92,31 @@ function productFrom(value: unknown): ProductNode | null {
   return null;
 }
 
+function definitionNodesFrom(value: unknown): MetafieldDefinitionNode[] {
+  if (!value || typeof value !== "object" || !("data" in value)) {
+    return [];
+  }
+
+  const data = (value as { data?: unknown }).data;
+  if (!data || typeof data !== "object" || !("metafieldDefinitions" in data)) {
+    return [];
+  }
+
+  const connection = (data as { metafieldDefinitions?: unknown }).metafieldDefinitions;
+  if (!connection || typeof connection !== "object" || !("nodes" in connection)) {
+    return [];
+  }
+
+  const nodes = (connection as { nodes?: unknown }).nodes;
+  if (!Array.isArray(nodes)) {
+    return [];
+  }
+
+  return nodes.filter((node): node is MetafieldDefinitionNode => (
+    Boolean(node) && typeof node === "object" && "id" in node
+  ));
+}
+
 function rootObject(value: unknown, key: string): Record<string, unknown> {
   if (!value || typeof value !== "object" || !("data" in value)) {
     return {};
@@ -101,39 +144,68 @@ function graphQLErrors(value: unknown): unknown[] {
   return [];
 }
 
+async function ensurePimProductIdDefinition(
+  graphql: (query: string, variables: unknown) => Promise<unknown>
+): Promise<ShopifyUserError[]> {
+  const lookupBody = await graphql(
+    PIM_PRODUCT_ID_DEFINITION_QUERY,
+    buildPimProductIdDefinitionLookupVariables()
+  );
+  const existingDefinition = definitionNodesFrom(lookupBody)[0];
+
+  if (existingDefinition) {
+    if (existingDefinition.capabilities?.uniqueValues?.enabled) {
+      return [];
+    }
+
+    return [
+      {
+        field: ["pim", "external_id"],
+        message: "Existing Shopify metafield definition pim.external_id must enable unique values before productSet customId upserts can run."
+      }
+    ];
+  }
+
+  const createBody = await graphql(
+    METAFIELD_DEFINITION_CREATE_MUTATION,
+    buildPimProductIdDefinitionCreateVariables()
+  );
+  const createErrors = graphQLErrors(createBody);
+  const userErrors = userErrorsFrom(rootObject(createBody, "metafieldDefinitionCreate"));
+
+  return createErrors.length > 0
+    ? [
+      ...userErrors,
+      ...createErrors.map((error) => ({
+        message: JSON.stringify(error)
+      }))
+    ]
+    : userErrors;
+}
+
 export function buildApp(options: BuildAppOptions = {}) {
   const app = Fastify({ logger: true });
   const shopDomain = options.shopDomain ?? process.env.SHOPIFY_SHOP_DOMAIN;
   const accessToken = options.accessToken ?? process.env.SHOPIFY_ADMIN_ACCESS_TOKEN;
   const apiVersion = options.apiVersion ?? process.env.SHOPIFY_API_VERSION ?? DEFAULT_SHOPIFY_API_VERSION;
+  const authMode = options.authMode ?? normalizeShopifyAdminAuthMode(process.env.SHOPIFY_ADMIN_AUTH_MODE);
   const deleteMode = options.deleteMode ?? (
     process.env.SHOPIFY_DELETE_MODE === "permanent" ? "permanent" : "archive"
   );
 
-  const configured = Boolean(shopDomain && accessToken);
+  const configured = Boolean(shopDomain && (authMode === "cli" || accessToken));
+  let pimProductIdDefinitionEnsured = false;
   const graphql = options.graphql ?? (async (query: string, variables: unknown) => {
-    if (!shopDomain || !accessToken) {
+    if (!shopDomain || (authMode === "token" && !accessToken)) {
       throw new Error("Shopify target is not configured.");
     }
 
-    const response = await fetch(shopifyGraphqlEndpoint(shopDomain, apiVersion), {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-shopify-access-token": accessToken
-      },
-      body: JSON.stringify({
-        query,
-        variables
-      })
+    return shopifyAdminGraphql(query, variables, {
+      shopDomain,
+      accessToken,
+      apiVersion,
+      authMode
     });
-    const body = await response.json();
-
-    if (!response.ok) {
-      throw new Error(`Shopify Admin API returned HTTP ${response.status}.`);
-    }
-
-    return body;
   });
 
   app.get("/health", async () => ({
@@ -141,6 +213,7 @@ export function buildApp(options: BuildAppOptions = {}) {
     service: "shopify-admin-target",
     configured,
     api_version: apiVersion,
+    auth_mode: authMode,
     delete_mode: deleteMode
   }));
 
@@ -158,6 +231,20 @@ export function buildApp(options: BuildAppOptions = {}) {
       return reply.code(503).send(configError());
     }
 
+    if (!pimProductIdDefinitionEnsured) {
+      const definitionErrors = await ensurePimProductIdDefinition(graphql);
+
+      if (definitionErrors.length > 0) {
+        return reply.code(502).send({
+          status: "rejected",
+          target: "shopify-dev-store",
+          user_errors: definitionErrors
+        });
+      }
+
+      pimProductIdDefinitionEnsured = true;
+    }
+
     const body = await graphql(PRODUCT_SET_MUTATION, buildProductSetVariables(parsed.data));
     const errors = graphQLErrors(body);
     const productSet = rootObject(body, "productSet");
@@ -173,6 +260,25 @@ export function buildApp(options: BuildAppOptions = {}) {
     }
 
     const product = productFrom(productSet.product);
+
+    if (product) {
+      const metafieldsBody = await graphql(
+        METAFIELDS_SET_MUTATION,
+        buildProductMetafieldsSetVariables(parsed.data, product.id)
+      );
+      const metafieldsSet = rootObject(metafieldsBody, "metafieldsSet");
+      const metafieldsUserErrors = userErrorsFrom(metafieldsSet);
+      const metafieldsErrors = graphQLErrors(metafieldsBody);
+
+      if (metafieldsErrors.length > 0 || metafieldsUserErrors.length > 0) {
+        return reply.code(502).send({
+          status: "rejected",
+          target: "shopify-dev-store",
+          errors: metafieldsErrors,
+          user_errors: metafieldsUserErrors
+        });
+      }
+    }
 
     return reply.code(200).send({
       status: "accepted",

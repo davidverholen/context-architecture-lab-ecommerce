@@ -48,13 +48,37 @@ Hydrogen does not own:
 
 Hydrogen is now allowed in MVP v0.1 because it was explicitly requested and recorded in [ADR-007](../decisions/ADR-007-hydrogen-storefront-boundary.md).
 
-It remains optional and not part of the default Docker Compose stack until a separate implementation step adds a storefront scaffold. The default local projection path remains `mock-shopify`; live Shopify remains opt-in through [Shopify Live Sync](shopify-live-sync.md).
+The optional scaffold lives under `apps/storefront`. It is not part of the default Docker Compose stack. The default local projection path remains `mock-shopify`; live Shopify remains opt-in through [Shopify Live Sync](shopify-live-sync.md).
+
+Current scaffold scope:
+
+- Product, collection, page, blog, policy, search, robots, sitemap, and cart routes from the Hydrogen scaffold.
+- Product detail add-to-cart behavior and cart line add/update/remove behavior.
+- No checkout redirect route.
+- No Customer Account API routes or customer profile/order/address mutations.
+- No Shopify Admin API calls from Hydrogen.
+
+Run locally:
+
+```sh
+npm run storefront:dev
+```
+
+Build locally:
+
+```sh
+npm run storefront:build
+```
 
 ## Environment And Secrets
 
 Hydrogen storefront environment variables must stay in private environment configuration. Do not commit real storefront tokens, customer account values, Oxygen deployment secrets, screenshots with tokens, or generated Shopify CLI environment files.
 
 The repository may document blank placeholders in `.env.example`, but real values belong only in a private `.env` file or a real secret manager.
+
+The storefront has its own ignored local file at `apps/storefront/.env`. The public placeholder shape is `apps/storefront/.env.example`.
+
+Connecting to the real Shopify shop requires a Storefront API token or a linked Hydrogen storefront environment. The local Shopify CLI store auth used for Admin product projection must include the needed Storefront token scope before an agent can create a Storefront API token. Until then, the scaffold can run against Mock.shop.
 
 ## Review Gates
 

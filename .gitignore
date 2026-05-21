@@ -4,9 +4,13 @@ node_modules
 .env.*
 !.env.example
 !.env.agent.example
+!apps/**/.env.example
 .DS_Store
 dist
 coverage
 .n8n-data
 .local
+apps/storefront/.react-router
+apps/storefront/.cursor
+*.tsbuildinfo
 *.log

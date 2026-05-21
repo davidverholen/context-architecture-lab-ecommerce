@@ -59,9 +59,15 @@ The future mock Shopify projection target should start as a local service and st
 
 ## Optional Hydrogen
 
-Hydrogen is introduced as optional storefront scope through [Hydrogen Storefront](../commerce/hydrogen-storefront.md) and [ADR-007](../decisions/ADR-007-hydrogen-storefront-boundary.md). It is not part of the default Docker Compose stack yet.
+Hydrogen is introduced as optional storefront scope through [Hydrogen Storefront](../commerce/hydrogen-storefront.md) and [ADR-007](../decisions/ADR-007-hydrogen-storefront-boundary.md). The local scaffold lives under [apps/storefront](../../apps/storefront/) and is not part of the default Docker Compose stack.
 
-Future Hydrogen implementation must keep Storefront API tokens outside source control, avoid Shopify Admin API writes, and require review before Oxygen, self-hosted deployment, Customer Account API, checkout, or customer data behavior is added.
+Run it locally with:
+
+```sh
+npm run storefront:dev
+```
+
+The scaffold must keep Storefront API tokens outside source control, avoid Shopify Admin API writes, and require review before Oxygen, self-hosted deployment, Customer Account API, checkout, or customer data behavior is added.
 
 ## Future Deployment Questions
 

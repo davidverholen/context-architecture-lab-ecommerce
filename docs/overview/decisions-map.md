@@ -9,8 +9,8 @@ This page is a compact map of durable architecture decisions. The ADR files rema
 | [ADR-003](../decisions/ADR-003-n8n-vs-custom-services.md) | n8n orchestrates visible workflows; tracked workflow JSON is the reviewable artifact; custom services own domain logic and validation. | Prevents workflows from becoming hidden business logic or unreviewable local state. |
 | [ADR-004](../decisions/ADR-004-agentic-change-governance.md) | Agents may propose/implement bounded changes; high-risk changes require review gates. | Preserves accountability and decision rights. |
 | [ADR-005](../decisions/ADR-005-product-export-projection-flow.md) | Akeneo CE enters as optional local setup through `akeneo-event-bridge`, n8n, product projection, and mock Shopify as first target. | Prevents real tools from silently replacing the model. |
-| [ADR-006](../decisions/ADR-006-shopify-live-target-adapter.md) | Live Shopify sync is an optional `shopify-admin-target` adapter using private env credentials and archive-by-default removal. | Keeps Shopify API behavior and secrets behind an adapter boundary. |
-| [ADR-007](../decisions/ADR-007-hydrogen-storefront-boundary.md) | Hydrogen is an optional storefront boundary that reads Shopify through Storefront API patterns and does not own Admin API writes. | Keeps customer-facing storefront work separate from product projection and credential handling. |
+| [ADR-006](../decisions/ADR-006-shopify-live-target-adapter.md) | Live Shopify sync is an optional `shopify-admin-target` adapter using private env credentials or local CLI auth for smoke tests, with archive-by-default removal. | Keeps Shopify API behavior and secrets behind an adapter boundary. |
+| [ADR-007](../decisions/ADR-007-hydrogen-storefront-boundary.md) | Hydrogen is an optional storefront boundary under `apps/storefront` that reads Shopify through Storefront API patterns and does not own Admin API writes. | Keeps customer-facing storefront work separate from product projection and credential handling. |
 
 ## Decision Flow
 

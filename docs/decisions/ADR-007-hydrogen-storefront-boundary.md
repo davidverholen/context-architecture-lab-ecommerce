@@ -30,7 +30,8 @@ Include Hydrogen in MVP v0.1 as an optional storefront boundary, not as the prod
 ## Consequences
 
 - MVP scope now includes a governed storefront boundary alongside product projection and order integration.
-- A future Hydrogen app scaffold may be added under an explicit storefront path, but adding the scaffold is a separate implementation step.
+- The Hydrogen app scaffold now lives under `apps/storefront`.
+- The scaffold keeps product, collection, search, page/content, and cart line behavior, but removes generated checkout redirects and Customer Account API routes until separate review.
 - Hydrogen source authority must be checked against official Shopify docs before API-specific code, environment setup, deployment setup, or customer-account behavior is added.
 - Storefront work becomes customer-facing commerce work and requires at least storefront review. Checkout and customer data changes require the customer data and checkout review gates.
 - The lab can explain the full loop from governed PIM data to Shopify projection to customer-facing headless storefront without adding production scale.

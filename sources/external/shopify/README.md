@@ -17,6 +17,9 @@ Use these official references before API-specific implementation:
 - https://shopify.dev/docs/storefronts/headless
 - https://shopify.dev/docs/api/admin-graphql/latest/objects/Product
 - https://shopify.dev/docs/api/admin-graphql/latest/mutations/productSet
+- https://shopify.dev/docs/api/admin-graphql/latest/mutations/metafieldsSet
 - https://shopify.dev/docs/api/admin-graphql/latest/mutations/productDelete
+- https://shopify.dev/docs/api/admin-graphql/latest/mutations/storefrontAccessTokenCreate
 - https://shopify.dev/docs/api/admin-graphql/latest/queries/productByIdentifier
 - https://shopify.dev/docs/api/admin-graphql/latest/input-objects/UniqueMetafieldValueInput
+- https://shopify.dev/docs/api/storefront/latest/mutations/cartLinesAdd

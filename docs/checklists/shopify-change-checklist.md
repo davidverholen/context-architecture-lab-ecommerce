@@ -6,9 +6,11 @@
 - [ ] Use the mock Shopify projection target before or alongside real Shopify Admin API integration.
 - [ ] Keep real Shopify credentials only in private `.env` or a real secret manager.
 - [ ] Confirm live sync uses `shopify-admin-target`, not direct n8n or projection-service token handling.
+- [ ] Confirm live sync auth mode is explicit: token mode for runtime credentials, CLI mode only for local operator-approved smoke tests.
 - [ ] Confirm repo-local Admin API agent access, if used, is explicit operator access and not the runtime sync path.
 - [ ] Confirm Hydrogen, when used, reads through Storefront API patterns and does not perform Admin API writes.
 - [ ] Keep Hydrogen storefront tokens and Customer Account API values outside source control.
+- [ ] Confirm Shopify `productSet` custom ID definitions use the required Shopify metafield type and unique-value capability before relying on custom ID upserts.
 - [ ] Prefer native Shopify fields first.
 - [ ] Use variants only for purchasable differences.
 - [ ] Use metafields for simple structured attributes.

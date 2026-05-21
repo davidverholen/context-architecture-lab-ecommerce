@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://context-architecture-commerce-lab.local/schemas/akeneo-webhook-product-event.schema.json",
+  "title": "Akeneo Webhook Product Event Envelope",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["events"],
+  "properties": {
+    "events": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["event_id", "action", "event_datetime", "data"],
+        "properties": {
+          "event_id": { "type": "string", "minLength": 1 },
+          "action": {
+            "type": "string",
+            "enum": ["product.created", "product.updated", "product.exported"]
+          },
+          "event_datetime": { "type": "string" },
+          "data": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": ["resource"],
+            "properties": {
+              "resource": {
+                "type": "object",
+                "additionalProperties": true,
+                "required": ["identifier", "family", "enabled", "values"],
+                "properties": {
+                  "identifier": { "type": "string", "minLength": 1 },
+                  "family": { "type": "string" },
+                  "enabled": { "type": "boolean" },
+                  "values": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

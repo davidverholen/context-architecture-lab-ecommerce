@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://context-architecture-commerce-lab.local/schemas/product-projection-job.schema.json",
+  "title": "Product Projection Job",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "job_id",
+    "source_export_id",
+    "idempotency_key",
+    "requested_at",
+    "source",
+    "target",
+    "pim_product"
+  ],
+  "properties": {
+    "job_id": { "type": "string", "minLength": 1 },
+    "source_export_id": { "type": "string", "minLength": 1 },
+    "idempotency_key": { "type": "string", "minLength": 1 },
+    "requested_at": { "type": "string" },
+    "source": { "type": "string", "enum": ["akeneo-ce"] },
+    "target": { "type": "string", "enum": ["mock-shopify", "shopify-dev-store"] },
+    "pim_product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pim_product_id",
+        "family",
+        "sku",
+        "status",
+        "attributes"
+      ],
+      "properties": {
+        "pim_product_id": { "type": "string" },
+        "family": { "type": "string", "enum": ["rug"] },
+        "sku": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "enriched", "approved"] },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "material",
+            "size",
+            "color",
+            "shape",
+            "pile_height_mm",
+            "care_instruction",
+            "suitable_rooms",
+            "style",
+            "origin_country"
+          ],
+          "properties": {
+            "material": { "type": "string" },
+            "size": { "type": "string" },
+            "color": { "type": "string" },
+            "shape": { "type": "string" },
+            "pile_height_mm": { "type": "number", "minimum": 0 },
+            "care_instruction": { "type": "string" },
+            "suitable_rooms": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string" }
+            },
+            "style": { "type": "string" },
+            "origin_country": { "type": "string", "pattern": "^[A-Z]{2}$" }
+          }
+        }
+      }
+    }
+  }
+}

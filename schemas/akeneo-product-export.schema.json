@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://context-architecture-commerce-lab.local/schemas/akeneo-product-export.schema.json",
+  "title": "Akeneo Product Export",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "export_id",
+        "source",
+        "event_type",
+        "occurred_at",
+        "product"
+      ],
+      "properties": {
+        "export_id": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "enum": ["akeneo-ce"] },
+        "event_type": {
+          "type": "string",
+          "enum": ["product.created", "product.updated", "product.exported"]
+        },
+        "occurred_at": { "type": "string" },
+        "product": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "identifier",
+            "family",
+            "enabled",
+            "completeness",
+            "values"
+          ],
+          "properties": {
+            "identifier": { "type": "string", "minLength": 1 },
+            "family": { "type": "string", "enum": ["rug"] },
+            "enabled": { "type": "boolean" },
+            "completeness": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["scope", "locale", "ratio"],
+              "properties": {
+                "scope": { "type": "string" },
+                "locale": { "type": "string" },
+                "ratio": { "type": "integer", "minimum": 0, "maximum": 100 }
+              }
+            },
+            "values": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "material",
+                "size",
+                "color",
+                "shape",
+                "pile_height_mm",
+                "care_instruction",
+                "suitable_rooms",
+                "style",
+                "origin_country"
+              ],
+              "properties": {
+                "material": { "type": "string" },
+                "size": { "type": "string" },
+                "color": { "type": "string" },
+                "shape": { "type": "string" },
+                "pile_height_mm": { "type": "number", "minimum": 0 },
+                "care_instruction": { "type": "string" },
+                "suitable_rooms": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": { "type": "string" }
+                },
+                "style": { "type": "string" },
+                "origin_country": { "type": "string", "pattern": "^[A-Z]{2}$" }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "export_id",
+        "source",
+        "event_type",
+        "occurred_at",
+        "product"
+      ],
+      "properties": {
+        "export_id": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "enum": ["akeneo-ce"] },
+        "event_type": { "type": "string", "enum": ["product.removed"] },
+        "occurred_at": { "type": "string" },
+        "product": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["identifier", "family"],
+          "properties": {
+            "identifier": { "type": "string", "minLength": 1 },
+            "family": { "type": "string", "enum": ["rug"] },
+            "enabled": { "type": "boolean", "enum": [false] }
+          }
+        }
+      }
+    }
+  ]
+}

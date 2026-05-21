@@ -1,0 +1,12 @@
+{
+  "removal_id": "projection-removal-akeneo-event-rug-atlas-sand-removed",
+  "source_export_id": "akeneo-event-rug-atlas-sand-removed",
+  "idempotency_key": "akeneo-event-rug-atlas-sand-removed:RUG-ATLAS-170X240-SAND:shopify-dev-store:remove",
+  "requested_at": "2026-05-21T08:00:30Z",
+  "source": "akeneo-ce",
+  "target": "shopify-dev-store",
+  "pim_product_id": "pim-rug-atlas-sand",
+  "sku": "RUG-ATLAS-170X240-SAND",
+  "projection_id": "shopify-projection-rug-atlas-sand",
+  "reason": "akeneo_product_removed"
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://context-architecture-commerce-lab.local/schemas/governance-decision.schema.json",
+  "title": "Governance Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision_id",
+    "change_request_id",
+    "status",
+    "review_gate",
+    "reviewers",
+    "checks",
+    "decision_summary",
+    "decided_at"
+  ],
+  "properties": {
+    "decision_id": { "type": "string" },
+    "change_request_id": { "type": "string" },
+    "status": { "type": "string", "enum": ["approved", "rejected", "needs_changes", "deferred"] },
+    "review_gate": { "type": "string" },
+    "reviewers": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "result"],
+        "properties": {
+          "name": { "type": "string" },
+          "result": { "type": "string", "enum": ["pass", "fail", "not_applicable"] },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "decision_summary": { "type": "string" },
+    "decided_at": { "type": "string" },
+    "required_followups": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

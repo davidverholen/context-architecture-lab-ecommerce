@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://context-architecture-commerce-lab.local/schemas/shopify-product-removal.schema.json",
+  "title": "Shopify Product Removal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "removal_id",
+    "source_export_id",
+    "idempotency_key",
+    "requested_at",
+    "source",
+    "target",
+    "pim_product_id",
+    "sku",
+    "projection_id",
+    "reason"
+  ],
+  "properties": {
+    "removal_id": { "type": "string", "minLength": 1 },
+    "source_export_id": { "type": "string", "minLength": 1 },
+    "idempotency_key": { "type": "string", "minLength": 1 },
+    "requested_at": { "type": "string" },
+    "source": { "type": "string", "enum": ["akeneo-ce"] },
+    "target": { "type": "string", "enum": ["mock-shopify", "shopify-dev-store"] },
+    "pim_product_id": { "type": "string" },
+    "sku": { "type": "string" },
+    "projection_id": { "type": "string" },
+    "reason": { "type": "string", "enum": ["akeneo_product_removed"] }
+  }
+}

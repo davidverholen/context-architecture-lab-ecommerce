@@ -1,0 +1,33 @@
+{
+  "events": [
+    {
+      "event_id": "akeneo-webhook-rug-atlas-sand-001",
+      "action": "product.updated",
+      "event_datetime": "2026-05-19T10:00:00Z",
+      "data": {
+        "resource": {
+          "identifier": "RUG-ATLAS-170X240-SAND",
+          "family": "rug",
+          "enabled": true,
+          "values": {
+            "material": [{ "locale": null, "scope": null, "data": "wool" }],
+            "size": [{ "locale": null, "scope": null, "data": "170x240 cm" }],
+            "color": [{ "locale": null, "scope": null, "data": "sand" }],
+            "shape": [{ "locale": null, "scope": null, "data": "rectangle" }],
+            "pile_height_mm": [{ "locale": null, "scope": null, "data": "12" }],
+            "care_instruction": [
+              {
+                "locale": "en_US",
+                "scope": null,
+                "data": "Vacuum regularly and spot clean with mild detergent."
+              }
+            ],
+            "suitable_rooms": [{ "locale": null, "scope": null, "data": ["living_room", "bedroom"] }],
+            "style": [{ "locale": null, "scope": null, "data": "modern organic" }],
+            "origin_country": [{ "locale": null, "scope": null, "data": "IN" }]
+          }
+        }
+      }
+    }
+  ]
+}

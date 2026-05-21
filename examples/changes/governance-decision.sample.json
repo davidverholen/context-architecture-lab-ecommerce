@@ -1,0 +1,25 @@
+{
+  "decision_id": "gd-2026-05-18-001",
+  "change_request_id": "cr-2026-05-18-001",
+  "status": "needs_changes",
+  "review_gate": "fulfillment-review",
+  "reviewers": ["commerce-owner", "fulfillment-owner"],
+  "checks": [
+    {
+      "name": "schema-validation",
+      "result": "pass",
+      "notes": "Sample canonical and mock WMS orders validate."
+    },
+    {
+      "name": "sku-mapping-evidence",
+      "result": "fail",
+      "notes": "WMS SKU mapping source has not been provided."
+    }
+  ],
+  "decision_summary": "The change is blocked until the fulfillment owner confirms the WMS SKU mapping.",
+  "decided_at": "2026-05-18T11:15:00Z",
+  "required_followups": [
+    "Add mapping evidence to the implementation handoff.",
+    "Update the integration flow checklist if this failure repeats."
+  ]
+}

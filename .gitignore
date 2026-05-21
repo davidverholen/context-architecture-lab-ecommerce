@@ -1,0 +1,12 @@
+node_modules
+.env
+.env.agent
+.env.*
+!.env.example
+!.env.agent.example
+.DS_Store
+dist
+coverage
+.n8n-data
+.local
+*.log

@@ -1,0 +1,17 @@
+# Product Projection Event Flow Review Handoff
+
+- Handoff status: Requested.
+- Source context: Product export/projection implementation.
+- Receiving context: Product projection architecture review.
+- Requested decision: Confirm whether the local event-shaped Akeneo-to-Shopify projection flow is acceptable as MVP architecture and identify obligations before the next implementation step.
+- Implementation goal: Review the local event-shaped Akeneo-to-Shopify product projection flow, including mock target and optional live Shopify target.
+- Current state: Akeneo CE can emit local product webhook events through a configured `context_lab` connection. `akeneo-event-bridge` normalizes rug product create/update/removal events, n8n orchestrates the visible product workflow, `product-projection-service` maps approved rug products or removal commands, `mock-shopify` stores/removes projection dumps, and `shopify-admin-target` can optionally upsert/archive products in a configured Shopify shop.
+- Files changed: service code under `services/akeneo-event-bridge`, `services/product-projection-service`, `services/mock-shopify`, `services/shopify-admin-target`, shared schemas/mapping, Docker Compose, examples, n8n workflow skeleton, setup scripts, ADR/docs/checklists/overview pages.
+- Tests or validation run: `npm run validate:schemas`, `npm run build`, `npm test`, `docker compose config`, `docker compose build product-projection-service mock-shopify`, `docker compose up -d --build n8n product-projection-service mock-shopify akeneo-event-bridge`, `npm run akeneo:emit-sample`, and a local Akeneo CE webhook smoke test through `npm run akeneo:seed-rug`.
+- Inputs and outputs: [Akeneo rug updated event sample](../../examples/products/akeneo-rug-updated-event.sample.json) becomes [Shopify rug projection sample](../../examples/products/shopify-rug-projection.sample.json) and either a local mock Shopify dump or a live Shopify upsert. [Akeneo rug removed event sample](../../examples/products/akeneo-rug-removed-event.sample.json) becomes a [Shopify product removal command](../../examples/products/shopify-product-removal.sample.json).
+- Idempotency considerations: Current idempotency key is deterministic from export id, product identifier, and target. No persistent idempotency store exists yet.
+- Audit considerations: Projection result shape is structured, but no durable audit log exists yet.
+- Failure modes: `AKENEO_EXPORT_INVALID`, `PIM_PRODUCT_INCOMPLETE`, `PROJECTION_MAPPING_MISSING`, `SHOPIFY_DOCS_VERIFICATION_REQUIRED`, `TARGET_UNAVAILABLE`.
+- Remaining work: Add persistent idempotency/audit storage if the flow becomes production-like, decide whether to verify Akeneo webhook signatures in the bridge beyond local development, decide whether to persist processed Akeneo event IDs, verify live Shopify credentials/scopes in a disposable shop, and design Shopify metaobject definitions before syncing reusable concept objects.
+- Review gate: Product projection review required before treating this flow as approved architecture beyond local MVP learning.
+- Closure condition: An accountable reviewer accepts the boundary, records obligations, or marks the handoff blocked with missing evidence.

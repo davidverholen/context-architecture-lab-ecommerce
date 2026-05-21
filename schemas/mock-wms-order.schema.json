@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://context-architecture-commerce-lab.local/schemas/mock-wms-order.schema.json",
+  "title": "Mock WMS Order",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "wms_order_id",
+    "source_order_id",
+    "ship_to",
+    "items",
+    "integration_status"
+  ],
+  "properties": {
+    "wms_order_id": { "type": "string", "minLength": 1 },
+    "source_order_id": { "type": "string", "minLength": 1 },
+    "ship_to": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "address1", "city", "postal_code", "country_code"],
+      "properties": {
+        "name": { "type": "string" },
+        "address1": { "type": "string" },
+        "address2": { "type": "string" },
+        "city": { "type": "string" },
+        "postal_code": { "type": "string" },
+        "country_code": { "type": "string", "pattern": "^[A-Z]{2}$" }
+      }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sku", "wms_sku", "quantity", "description"],
+        "properties": {
+          "sku": { "type": "string" },
+          "wms_sku": { "type": ["string", "null"] },
+          "quantity": { "type": "integer", "minimum": 1 },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "integration_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "errors"],
+      "properties": {
+        "state": { "type": "string", "enum": ["accepted", "rejected", "pending"] },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["code", "message"],
+            "properties": {
+              "code": { "type": "string", "enum": ["SKU_MAPPING_MISSING", "VALIDATION_FAILED", "WMS_UNAVAILABLE"] },
+              "message": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

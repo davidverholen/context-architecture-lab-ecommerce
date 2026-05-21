@@ -1,0 +1,25 @@
+{
+  "job_id": "projection-job-2026-05-18-001",
+  "source_export_id": "akeneo-export-2026-05-18-001",
+  "idempotency_key": "akeneo-export-2026-05-18-001:RUG-ATLAS-170X240-SAND:mock-shopify",
+  "requested_at": "2026-05-18T12:31:00Z",
+  "source": "akeneo-ce",
+  "target": "mock-shopify",
+  "pim_product": {
+    "pim_product_id": "pim-rug-atlas-sand",
+    "family": "rug",
+    "sku": "RUG-ATLAS-170X240-SAND",
+    "status": "approved",
+    "attributes": {
+      "material": "wool",
+      "size": "170x240 cm",
+      "color": "sand",
+      "shape": "rectangle",
+      "pile_height_mm": 12,
+      "care_instruction": "Vacuum regularly and spot clean with mild detergent.",
+      "suitable_rooms": ["living_room", "bedroom"],
+      "style": "modern organic",
+      "origin_country": "IN"
+    }
+  }
+}

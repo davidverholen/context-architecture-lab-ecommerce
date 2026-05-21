@@ -1,0 +1,182 @@
+name: context-architecture-commerce-lab
+
+services:
+  n8n-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${N8N_POSTGRES_USER:-n8n}
+      POSTGRES_PASSWORD: ${N8N_POSTGRES_PASSWORD:-local-only-not-a-secret}
+      POSTGRES_DB: ${N8N_POSTGRES_DB:-n8n}
+    volumes:
+      - n8n-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  n8n:
+    image: n8nio/n8n:latest
+    depends_on:
+      n8n-postgres:
+        condition: service_healthy
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    environment:
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: n8n-postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: ${N8N_POSTGRES_DB:-n8n}
+      DB_POSTGRESDB_USER: ${N8N_POSTGRES_USER:-n8n}
+      DB_POSTGRESDB_PASSWORD: ${N8N_POSTGRES_PASSWORD:-local-only-not-a-secret}
+      N8N_HOST: localhost
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      N8N_VERSION_NOTIFICATIONS_ENABLED: "false"
+      N8N_SECURE_COOKIE: "false"
+      N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
+      N8N_RUNNERS_ENABLED: "true"
+      N8N_BLOCK_ENV_ACCESS_IN_NODE: "true"
+      N8N_GIT_NODE_DISABLE_BARE_REPOS: "true"
+    volumes:
+      - ./.n8n-data:/home/node/.n8n
+      - ./n8n/workflows:/repo-workflows:ro
+
+  commerce-integration-service:
+    build:
+      context: .
+      dockerfile: services/commerce-integration-service/Dockerfile
+    environment:
+      PORT: 8082
+      MOCK_WMS_URL: http://mock-wms:8083
+    ports:
+      - "${COMMERCE_INTEGRATION_SERVICE_PORT:-8082}:8082"
+    depends_on:
+      mock-wms:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:8082/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mock-wms:
+    build:
+      context: .
+      dockerfile: services/mock-wms/Dockerfile
+    environment:
+      PORT: 8083
+    ports:
+      - "${MOCK_WMS_PORT:-8083}:8083"
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:8083/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mock-pim:
+    build:
+      context: .
+      dockerfile: services/mock-pim/Dockerfile
+    environment:
+      PORT: 8084
+    ports:
+      - "${MOCK_PIM_PORT:-8084}:8084"
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:8084/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  product-projection-service:
+    build:
+      context: .
+      dockerfile: services/product-projection-service/Dockerfile
+    environment:
+      PORT: 8086
+      PRODUCT_PROJECTION_TARGET: ${PRODUCT_PROJECTION_TARGET:-mock-shopify}
+      PRODUCT_TARGET_URL: ${PRODUCT_TARGET_URL:-http://mock-shopify:8087}
+      MOCK_SHOPIFY_URL: http://mock-shopify:8087
+    ports:
+      - "${PRODUCT_PROJECTION_SERVICE_PORT:-8086}:8086"
+    depends_on:
+      mock-shopify:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:8086/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  akeneo-event-bridge:
+    build:
+      context: .
+      dockerfile: services/akeneo-event-bridge/Dockerfile
+    environment:
+      PORT: 8090
+      N8N_PRODUCT_WEBHOOK_URL: http://n8n:5678/webhook/akeneo-product-updated-to-mock-shopify
+    ports:
+      - "${AKENEO_EVENT_BRIDGE_PORT:-8090}:8090"
+    depends_on:
+      n8n:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:8090/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mock-shopify:
+    build:
+      context: .
+      dockerfile: services/mock-shopify/Dockerfile
+    environment:
+      PORT: 8087
+      PROJECTION_DUMP_DIR: /data/projection-dumps
+    ports:
+      - "${MOCK_SHOPIFY_PORT:-8087}:8087"
+    volumes:
+      - ./.local/mock-shopify-dumps:/data/projection-dumps
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:8087/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  shopify-admin-target:
+    profiles:
+      - shopify-live
+    build:
+      context: .
+      dockerfile: services/shopify-admin-target/Dockerfile
+    environment:
+      PORT: 8088
+      SHOPIFY_SHOP_DOMAIN: ${SHOPIFY_SHOP_DOMAIN:-}
+      SHOPIFY_ADMIN_ACCESS_TOKEN: ${SHOPIFY_ADMIN_ACCESS_TOKEN:-}
+      SHOPIFY_API_VERSION: ${SHOPIFY_API_VERSION:-2026-04}
+      SHOPIFY_DELETE_MODE: ${SHOPIFY_DELETE_MODE:-archive}
+    ports:
+      - "${SHOPIFY_ADMIN_TARGET_PORT:-8088}:8088"
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:8088/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  governance-service:
+    build:
+      context: .
+      dockerfile: services/governance-service/Dockerfile
+    environment:
+      PORT: 8085
+    ports:
+      - "${GOVERNANCE_SERVICE_PORT:-8085}:8085"
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:8085/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  n8n-postgres-data:

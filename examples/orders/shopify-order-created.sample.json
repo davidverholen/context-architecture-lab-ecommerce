@@ -1,0 +1,35 @@
+{
+  "id": "gid://shopify/Order/1001",
+  "name": "#1001",
+  "created_at": "2026-05-18T10:30:00Z",
+  "currency": "EUR",
+  "customer": {
+    "id": "gid://shopify/Customer/501",
+    "email": "customer@example.com"
+  },
+  "shipping_address": {
+    "name": "Mira Jensen",
+    "address1": "Example Street 12",
+    "address2": "Floor 2",
+    "city": "Berlin",
+    "postal_code": "10115",
+    "country_code": "DE"
+  },
+  "line_items": [
+    {
+      "id": "gid://shopify/LineItem/7001",
+      "sku": "RUG-ATLAS-170X240-SAND",
+      "title": "Atlas Wool Rug 170x240 Sand",
+      "quantity": 1,
+      "price": 349.0,
+      "product_family": "rug",
+      "attributes": {
+        "material": "wool",
+        "size": "170x240 cm",
+        "color": "sand",
+        "shape": "rectangle"
+      }
+    }
+  ],
+  "total_price": 358.9
+}

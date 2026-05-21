@@ -1,0 +1,22 @@
+# Shopify Change Checklist
+
+- [ ] Confirm Shopify remains a commerce projection, not product master.
+- [ ] Confirm PIM/Akeneo remains the source of product governance and enrichment.
+- [ ] Check official Shopify docs before API-specific work.
+- [ ] Use the mock Shopify projection target before or alongside real Shopify Admin API integration.
+- [ ] Keep real Shopify credentials only in private `.env` or a real secret manager.
+- [ ] Confirm live sync uses `shopify-admin-target`, not direct n8n or projection-service token handling.
+- [ ] Confirm repo-local Admin API agent access, if used, is explicit operator access and not the runtime sync path.
+- [ ] Confirm Hydrogen, when used, reads through Storefront API patterns and does not perform Admin API writes.
+- [ ] Keep Hydrogen storefront tokens and Customer Account API values outside source control.
+- [ ] Prefer native Shopify fields first.
+- [ ] Use variants only for purchasable differences.
+- [ ] Use metafields for simple structured attributes.
+- [ ] Use metaobjects for reusable structured concepts.
+- [ ] Confirm no unsupported certification, origin, or material claim is invented.
+- [ ] Check `examples/products/pim-to-shopify-mapping.table.md` for mapping impact.
+- [ ] Validate projection examples.
+- [ ] Validate removal examples when create/update/delete behavior changes.
+- [ ] Confirm Akeneo deletion maps to archive unless permanent deletion is explicitly reviewed and configured.
+- [ ] Require review for product projection changes.
+- [ ] Require review for Hydrogen storefront behavior, and customer data or checkout review for Customer Account API and checkout changes.

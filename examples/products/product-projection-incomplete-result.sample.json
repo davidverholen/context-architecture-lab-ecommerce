@@ -1,0 +1,14 @@
+{
+  "result_id": "projection-result-projection-job-akeneo-event-2026-05-18-002",
+  "job_id": "projection-job-akeneo-event-2026-05-18-002",
+  "status": "review_required",
+  "target": "mock-shopify",
+  "projected_at": "2026-05-18T12:47:00Z",
+  "projection": null,
+  "errors": [
+    {
+      "code": "PIM_PRODUCT_INCOMPLETE",
+      "message": "Product RUG-ATLAS-170X240-SAND is not approved for commerce projection."
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "export_id": "akeneo-event-rug-atlas-sand-removed",
+  "source": "akeneo-ce",
+  "event_type": "product.removed",
+  "occurred_at": "2026-05-21T08:00:00Z",
+  "product": {
+    "identifier": "RUG-ATLAS-170X240-SAND",
+    "family": "rug",
+    "enabled": false
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "wms_order_id": "wms-order-1001",
+  "source_order_id": "gid://shopify/Order/1001",
+  "ship_to": {
+    "name": "Mira Jensen",
+    "address1": "Example Street 12",
+    "address2": "Floor 2",
+    "city": "Berlin",
+    "postal_code": "10115",
+    "country_code": "DE"
+  },
+  "items": [
+    {
+      "sku": "RUG-ATLAS-170X240-SAND",
+      "wms_sku": null,
+      "quantity": 1,
+      "description": "Atlas Wool Rug 170x240 Sand"
+    }
+  ],
+  "integration_status": {
+    "state": "rejected",
+    "errors": [
+      {
+        "code": "SKU_MAPPING_MISSING",
+        "message": "No WMS SKU mapping exists for RUG-ATLAS-170X240-SAND."
+      }
+    ]
+  }
+}

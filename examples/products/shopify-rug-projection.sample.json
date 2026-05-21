@@ -1,0 +1,49 @@
+{
+  "projection_id": "shopify-projection-rug-atlas-sand",
+  "pim_product_id": "pim-rug-atlas-sand",
+  "shopify_status": "draft",
+  "title": "Atlas Wool Rug",
+  "handle": "atlas-wool-rug-sand",
+  "vendor": "Context Home",
+  "product_type": "Rug",
+  "description": "A hand-finished wool rug projected from governed PIM product data.",
+  "variants": [
+    {
+      "sku": "RUG-ATLAS-170X240-SAND",
+      "price": 349.0,
+      "option_values": {
+        "size": "170x240 cm",
+        "color": "sand"
+      }
+    }
+  ],
+  "metafields": [
+    {
+      "namespace": "details",
+      "key": "material",
+      "type": "single_line_text_field",
+      "value": "wool"
+    },
+    {
+      "namespace": "details",
+      "key": "pile_height_mm",
+      "type": "number_integer",
+      "value": 12
+    },
+    {
+      "namespace": "details",
+      "key": "suitable_rooms",
+      "type": "list.single_line_text_field",
+      "value": ["living_room", "bedroom"]
+    }
+  ],
+  "metaobjects": [
+    {
+      "type": "care_profile",
+      "handle": "vacuum-spot-clean",
+      "fields": {
+        "care_instruction": "Vacuum regularly and spot clean with mild detergent."
+      }
+    }
+  ]
+}

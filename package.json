@@ -1,0 +1,47 @@
+{
+  "name": "context-architecture-commerce-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "context:check": "node scripts/context-architecture-check.mjs",
+    "context:full": "npm run context:check && npm run validate:schemas && npm test",
+    "n8n:validate": "node scripts/n8n-validate-workflows.mjs",
+    "n8n:import": "npm run n8n:validate && bash scripts/n8n-import-workflows.sh",
+    "n8n:export": "bash scripts/n8n-export-workflows.sh",
+    "n8n:activate-product-flow": "bash scripts/n8n-activate-product-flow.sh",
+    "validate:schemas": "node scripts/validate-schemas.mjs",
+    "akeneo:setup": "bash scripts/akeneo-setup.sh",
+    "akeneo:up": "bash scripts/akeneo-up.sh",
+    "akeneo:down": "bash scripts/akeneo-down.sh",
+    "akeneo:demo-up": "bash scripts/akeneo-demo-up.sh",
+    "akeneo:configure-webhook": "bash scripts/akeneo-configure-webhook.sh",
+    "akeneo:webhook-worker": "bash scripts/akeneo-webhook-worker-up.sh",
+    "akeneo:seed-rug": "node scripts/akeneo-seed-rug-product.mjs",
+    "akeneo:emit-sample": "node scripts/akeneo-emit-sample-event.mjs",
+    "shopify:agent-check": "node scripts/shopify-agent-check.mjs",
+    "mcp:shopify-admin": "node mcp/shopify-admin/server.mjs",
+    "start:commerce": "tsx services/commerce-integration-service/src/server.ts",
+    "start:product-projection": "tsx services/product-projection-service/src/server.ts",
+    "start:akeneo-event-bridge": "tsx services/akeneo-event-bridge/src/server.ts",
+    "start:mock-wms": "tsx services/mock-wms/src/server.ts",
+    "start:mock-pim": "tsx services/mock-pim/src/server.ts",
+    "start:mock-shopify": "tsx services/mock-shopify/src/server.ts",
+    "start:shopify-admin-target": "tsx services/shopify-admin-target/src/server.ts",
+    "start:governance": "tsx services/governance-service/src/server.ts"
+  },
+  "dependencies": {
+    "fastify": "^5.3.3",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@types/node": "^22.15.19",
+    "ajv": "^8.17.1",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
+  }
+}

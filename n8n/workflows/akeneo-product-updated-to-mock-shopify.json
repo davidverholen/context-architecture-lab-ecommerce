@@ -1,0 +1,298 @@
+{
+  "id": "LEoPHXss7xgnaoPq",
+  "name": "Akeneo Product Updated to Product Target",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "Skeleton workflow for event-shaped product projection. Akeneo Community Edition is the local PIM source, but official Akeneo Event Platform support is not assumed for CE. Test this with the local Akeneo export-shaped sample JSON. No Shopify credentials and no external calls.",
+        "height": 260,
+        "width": 500
+      },
+      "id": "6c49cf16-57d6-43df-a416-e321331e8443",
+      "name": "Import and Boundary Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -680,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "akeneo-product-updated-to-mock-shopify",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "c4cf3ea4-22fe-4a8c-a5ef-91265c350ee6",
+      "name": "Webhook - Akeneo product event",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -680,
+        80
+      ],
+      "webhookId": "akeneo-product-updated-to-mock-shopify"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://product-projection-service:8086/products/akeneo-events",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body ?? $json) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "1b30ec14-8b32-4ce3-b010-312402700f85",
+      "name": "Call product-projection-service",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -360,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ Number($json.statusCode ?? $json.status_code ?? 500) < 400 && (($json.body?.status ?? $json.status) === 'accepted') }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "01910174-4130-45c6-97ed-d19f71cc05c3",
+      "name": "Was projection accepted?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const result = $json.body ?? $json;\nreturn [{\n  json: {\n    status: 'accepted',\n    message: 'Akeneo product event was projected to the configured product target.',\n    projection_id: result.projection?.projection_id,\n    dump_path: result.dump_path,\n    target_reference: result.target_reference,\n    operation: result.operation,\n    result\n  }\n}];"
+      },
+      "id": "9b5da98a-3c9c-47a2-8f98-3f91bec89d91",
+      "name": "Build projection success",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "424f7c11-06a0-477b-ae06-e7e9144354fd",
+      "name": "Return projection success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        560,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ JSON.stringify($json.body ?? $json).includes('PIM_PRODUCT_INCOMPLETE') }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "8ca437f7-45cd-4964-9004-dfc5c7976bb0",
+      "name": "Is PIM product incomplete?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        260,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const result = $json.body ?? $json;\nreturn [{\n  json: {\n    status: 'review_required',\n    error: {\n      code: 'PIM_PRODUCT_INCOMPLETE',\n      message: 'Akeneo product is not complete or approved for customer-facing projection.'\n    },\n    result\n  }\n}];"
+      },
+      "id": "412ce440-9082-4939-9e98-b7109b7ff54b",
+      "name": "Build product review response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 422
+        }
+      },
+      "id": "71aa7f1e-7bf8-489c-bf86-db66c63f4f49",
+      "name": "Return product review response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        860,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const result = $json.body ?? $json;\nreturn [{\n  json: {\n    status: 'rejected',\n    error: {\n      code: 'PRODUCT_PROJECTION_FAILED',\n      message: 'Product projection failed before target acceptance.'\n    },\n    result\n  }\n}];"
+      },
+      "id": "69867423-12bd-4175-9bc1-5684fc9ecf9b",
+      "name": "Build projection error response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 502
+        }
+      },
+      "id": "33415ed3-f5bb-4172-9880-3ecc62212224",
+      "name": "Return projection error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        860,
+        360
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - Akeneo product event": {
+      "main": [
+        [
+          {
+            "node": "Call product-projection-service",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call product-projection-service": {
+      "main": [
+        [
+          {
+            "node": "Was projection accepted?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Was projection accepted?": {
+      "main": [
+        [
+          {
+            "node": "Build projection success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is PIM product incomplete?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build projection success": {
+      "main": [
+        [
+          {
+            "node": "Return projection success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is PIM product incomplete?": {
+      "main": [
+        [
+          {
+            "node": "Build product review response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build projection error response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build product review response": {
+      "main": [
+        [
+          {
+            "node": "Return product review response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build projection error response": {
+      "main": [
+        [
+          {
+            "node": "Return projection error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "local-skeleton",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

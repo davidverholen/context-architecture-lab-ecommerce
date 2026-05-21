@@ -1,0 +1,305 @@
+{
+  "id": "yzmqpQW2epLuFxbc",
+  "name": "Order Created to Mock WMS",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "Skeleton workflow for MVP v0.1. Import into local n8n, inspect node parameters, and adjust HTTP Request / Respond to Webhook fields if your n8n version rewrites them. This workflow uses only local Docker service names and no Shopify credentials. Test URL while editing is usually /webhook-test/order-created-to-wms; active workflow URL is usually /webhook/order-created-to-wms.",
+        "height": 260,
+        "width": 460
+      },
+      "id": "2a9c4b7d-9a81-4300-8d53-7a4e9d7f9d01",
+      "name": "Import and Test Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -620,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "order-created-to-wms",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "0b63f891-7ef6-4b48-8a9b-d8f1905b7550",
+      "name": "Webhook - Shopify order-created sample",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -620,
+        120
+      ],
+      "webhookId": "order-created-to-wms"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://commerce-integration-service:8082/orders/shopify-created",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body ?? $json) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "f04268f7-bdc7-4558-b4e8-4e848c4dd0e4",
+      "name": "Call commerce-integration-service",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -320,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ Number($json.statusCode ?? $json.status_code ?? 500) < 400 && (($json.body?.status ?? $json.status) === 'accepted') }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "2e89c8ad-8acf-4757-9491-c30c06893670",
+      "name": "Was integration accepted?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const integration = $json.body ?? $json;\nreturn [{\n  json: {\n    status: 'accepted',\n    message: 'Order was transformed and sent to mock WMS.',\n    canonical_order: integration.canonical_order,\n    mock_wms_order: integration.mock_wms_order,\n    wms_response: integration.wms_response ?? null\n  }\n}];"
+      },
+      "id": "5d576679-98b6-4d08-a5a8-c4a913e4292a",
+      "name": "Build success response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "cad412f5-91e8-4323-a9d2-3213ec24b83f",
+      "name": "Return success response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        540,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ JSON.stringify($json.body ?? $json).includes('SKU_MAPPING_MISSING') }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "a630310f-2c96-46b2-89b6-d9335f2c47da",
+      "name": "Is SKU_MAPPING_MISSING?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        260,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const integration = $json.body ?? $json;\nreturn [{\n  json: {\n    status: 'rejected',\n    error: {\n      code: 'SKU_MAPPING_MISSING',\n      message: 'A Shopify SKU could not be mapped to a mock WMS SKU.'\n    },\n    integration_response: integration\n  }\n}];"
+      },
+      "id": "87e20d7d-0676-42a8-91e6-148207ac731e",
+      "name": "Build SKU mapping error response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        540,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 422
+        }
+      },
+      "id": "9f16e6f0-7934-4dc7-9502-518056a6d87d",
+      "name": "Return SKU mapping error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        820,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const integration = $json.body ?? $json;\nreturn [{\n  json: {\n    status: 'rejected',\n    error: {\n      code: 'ORDER_INTEGRATION_FAILED',\n      message: 'Order integration failed before fulfillment acceptance.'\n    },\n    integration_response: integration\n  }\n}];"
+      },
+      "id": "797fbcd3-7b48-4d8b-99f5-f3f8cc3df45b",
+      "name": "Build generic error response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        540,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 502
+        }
+      },
+      "id": "308c0fb8-5c76-4aee-8c9e-ef12720baacb",
+      "name": "Return generic error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        820,
+        360
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - Shopify order-created sample": {
+      "main": [
+        [
+          {
+            "node": "Call commerce-integration-service",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call commerce-integration-service": {
+      "main": [
+        [
+          {
+            "node": "Was integration accepted?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Was integration accepted?": {
+      "main": [
+        [
+          {
+            "node": "Build success response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is SKU_MAPPING_MISSING?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build success response": {
+      "main": [
+        [
+          {
+            "node": "Return success response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is SKU_MAPPING_MISSING?": {
+      "main": [
+        [
+          {
+            "node": "Build SKU mapping error response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build generic error response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build SKU mapping error response": {
+      "main": [
+        [
+          {
+            "node": "Return SKU mapping error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build generic error response": {
+      "main": [
+        [
+          {
+            "node": "Return generic error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "order-created-to-wms-skeleton-v0-1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [
+    {
+      "name": "mvp-v0.1"
+    },
+    {
+      "name": "local-only"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "export_id": "akeneo-event-2026-05-18-001",
+  "source": "akeneo-ce",
+  "event_type": "product.updated",
+  "occurred_at": "2026-05-18T12:45:00Z",
+  "product": {
+    "identifier": "RUG-ATLAS-170X240-SAND",
+    "family": "rug",
+    "enabled": true,
+    "completeness": {
+      "scope": "ecommerce",
+      "locale": "en_US",
+      "ratio": 100
+    },
+    "values": {
+      "material": "wool",
+      "size": "170x240 cm",
+      "color": "sand",
+      "shape": "rectangle",
+      "pile_height_mm": 12,
+      "care_instruction": "Vacuum regularly and spot clean with mild detergent.",
+      "suitable_rooms": ["living_room", "bedroom"],
+      "style": "modern organic",
+      "origin_country": "IN"
+    }
+  }
+}

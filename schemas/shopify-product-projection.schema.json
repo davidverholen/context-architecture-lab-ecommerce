@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://context-architecture-commerce-lab.local/schemas/shopify-product-projection.schema.json",
+  "title": "Shopify Product Projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "projection_id",
+    "pim_product_id",
+    "shopify_status",
+    "title",
+    "handle",
+    "vendor",
+    "product_type",
+    "description",
+    "variants",
+    "metafields",
+    "metaobjects"
+  ],
+  "properties": {
+    "projection_id": { "type": "string" },
+    "pim_product_id": { "type": "string" },
+    "shopify_status": { "type": "string", "enum": ["draft", "active", "archived"] },
+    "title": { "type": "string" },
+    "handle": { "type": "string" },
+    "vendor": { "type": "string" },
+    "product_type": { "type": "string", "enum": ["Rug"] },
+    "description": { "type": "string" },
+    "variants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sku", "price", "option_values"],
+        "properties": {
+          "sku": { "type": "string" },
+          "price": { "type": "number", "minimum": 0 },
+          "option_values": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["size", "color"],
+            "properties": {
+              "size": { "type": "string" },
+              "color": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "metafields": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["namespace", "key", "type", "value"],
+        "properties": {
+          "namespace": { "type": "string" },
+          "key": { "type": "string" },
+          "type": { "type": "string" },
+          "value": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "number" },
+              {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "metaobjects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "handle", "fields"],
+        "properties": {
+          "type": { "type": "string" },
+          "handle": { "type": "string" },
+          "fields": { "type": "object" }
+        }
+      }
+    }
+  }
+}

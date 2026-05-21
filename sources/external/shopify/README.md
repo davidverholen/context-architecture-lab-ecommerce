@@ -8,6 +8,9 @@ Use these official references before API-specific implementation:
 - https://shopify.dev/docs/api/admin-graphql
 - https://shopify.dev/docs/api/storefront
 - https://shopify.dev/docs/storefronts/headless/getting-started/build-options
+- https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api
+- https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/manage-headless-channels
+- https://shopify.dev/docs/storefronts/headless/bring-your-own-stack
 - https://shopify.dev/docs/storefronts/headless/hydrogen/getting-started
 - https://shopify.dev/docs/storefronts/headless/hydrogen/data-fetching
 - https://shopify.dev/docs/storefronts/headless/hydrogen/environments

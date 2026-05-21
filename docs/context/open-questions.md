@@ -13,7 +13,7 @@ No source-copy failure was recorded during initial scaffold creation. The Contex
 - Which metafield types should be used for numeric units, country codes, lists, and Storefront visibility?
 - Which metaobject definitions, reference patterns, localization behavior, and Storefront access rules apply?
 - Which current Shopify limits or constraints affect rug projection?
-- Which Shopify app scopes are the minimum needed beyond `read_products` and `write_products` for the live adapter and Storefront token setup as they evolve?
+- Which Shopify app scopes are the minimum needed beyond `read_products` and `write_products` for the live adapter as it evolves?
 - Should Akeneo product removal permanently delete Shopify products in any environment, or should archive remain the only allowed policy?
 
 These questions require official Shopify documentation verification before expanding the live Shopify adapter. Detailed projection notes live in [pim-to-shopify-mapping.table.md](../../examples/products/pim-to-shopify-mapping.table.md) and [Shopify Live Sync](../commerce/shopify-live-sync.md).
@@ -22,6 +22,7 @@ These questions require official Shopify documentation verification before expan
 
 - When should the Hydrogen scaffold switch from Mock.shop/default local data to the configured Shopify shop?
 - Which Storefront API version should the future Hydrogen app pin after shop/channel verification?
+- Should the local Hydrogen app use values copied from the Shopify Headless channel, or link to a Shopify Hydrogen storefront and pull environment values with the Shopify CLI?
 - Which projected Shopify products should be made active and published for storefront smoke tests?
 - Should the MVP use the Hydrogen channel and Oxygen preview deployments, or keep deployment deferred?
 - What is the exact review gate and approval evidence for enabling checkout redirects, Customer Account API, analytics attribution, and customer data behavior?

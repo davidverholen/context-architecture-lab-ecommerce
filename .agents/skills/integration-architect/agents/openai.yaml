@@ -1,0 +1,4 @@
+interface:
+  display_name: "Integration Architect"
+  short_description: "Design and review n8n, service, order, and projection flows."
+  default_prompt: "Review or design this integration flow using the repository boundary rules."

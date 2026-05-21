@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hydrogen Storefront Architect"
+  short_description: "Design and review the optional Hydrogen storefront boundary."
+  default_prompt: "Use the Hydrogen storefront boundary rules to plan or review a Hydrogen change."

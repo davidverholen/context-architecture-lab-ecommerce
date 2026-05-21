@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shopify Architect"
+  short_description: "Model Shopify projection, Admin API, and headless boundaries."
+  default_prompt: "Review this Shopify-related change for source authority, projection boundaries, and review gates."

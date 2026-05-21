@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cloud Run Architect"
+  short_description: "Review Node.js service readiness for Cloud Run posture."
+  default_prompt: "Review this service or change for Cloud Run readiness and deployment posture."

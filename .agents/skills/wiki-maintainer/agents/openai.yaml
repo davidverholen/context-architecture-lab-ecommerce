@@ -1,0 +1,4 @@
+interface:
+  display_name: "Wiki Maintainer"
+  short_description: "Curate stable repository knowledge into docs and overview pages."
+  default_prompt: "Curate this learning or architecture change into the repository docs."

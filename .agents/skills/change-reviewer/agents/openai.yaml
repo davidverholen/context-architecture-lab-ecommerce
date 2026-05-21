@@ -1,0 +1,4 @@
+interface:
+  display_name: "Change Reviewer"
+  short_description: "Classify risk, checks, and review gates for changes."
+  default_prompt: "Classify this change request and identify required checks and review gates."

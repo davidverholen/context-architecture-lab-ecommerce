@@ -1,0 +1,4 @@
+interface:
+  display_name: "Context Architect"
+  short_description: "Apply Context Architecture boundaries and governance."
+  default_prompt: "Apply the repository Context Architecture rules to this change or decision."

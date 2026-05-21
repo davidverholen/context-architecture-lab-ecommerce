@@ -78,7 +78,9 @@ The repository may document blank placeholders in `.env.example`, but real value
 
 The storefront has its own ignored local file at `apps/storefront/.env`. The public placeholder shape is `apps/storefront/.env.example`.
 
-Connecting to the real Shopify shop requires a Storefront API token or a linked Hydrogen storefront environment. The local Shopify CLI `store auth` flow is for Admin API scopes used by product projection; it does not accept Storefront token creation as an OAuth scope. For this project, the preferred path is to create or link a storefront through Shopify's Headless/Hydrogen channel, copy or pull the Storefront API environment values into the ignored `apps/storefront/.env`, and then publish approved products to the appropriate storefront sales channel. Until then, the scaffold can run against Mock.shop.
+Connecting to the real Shopify shop requires a Storefront API token or a linked Hydrogen storefront environment. The local Shopify CLI `store auth` flow accepts Shopify access scopes, but Storefront API token creation depends on unauthenticated Storefront scopes such as product listings, product inventory, content, and checkout/cart access. A non-existent scope like `write_storefront_access_tokens` is invalid.
+
+For this project, the preferred path is to create or link a storefront through Shopify's Headless/Hydrogen channel, copy or pull the Storefront API environment values into the ignored `apps/storefront/.env`, and then publish approved products to the appropriate storefront sales channel. The local operator command `npm run shopify:publish-sample` can also write a generated Storefront token to `apps/storefront/.env` when run with `SHOPIFY_CREATE_STOREFRONT_TOKEN=true` after the required unauthenticated scopes are granted. Until then, the scaffold can run against Mock.shop.
 
 ## Review Gates
 

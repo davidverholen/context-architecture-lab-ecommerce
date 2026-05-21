@@ -143,6 +143,20 @@ npm run shopify:project-sample
 
 The command reads private `.env` values first and can fall back to ignored `.env.agent` store/auth settings for local CLI mode.
 
+For an explicitly approved dev-shop storefront smoke test, use:
+
+```sh
+npm run shopify:publish-sample
+```
+
+This command is intentionally separate from normal projection. It activates the sample product, sets test inventory, and publishes it to a matching publication such as Headless, Hydrogen, or Online Store. It requires expanded local Shopify CLI auth scopes for publications, inventory, locations, and Storefront API token creation if `SHOPIFY_CREATE_STOREFRONT_TOKEN=true` is used:
+
+```sh
+shopify store auth --store your-shop.myshopify.com --scopes read_products,write_products,read_publications,write_publications,read_inventory,write_inventory,read_locations,unauthenticated_read_product_listings,unauthenticated_read_product_inventory,unauthenticated_read_content,unauthenticated_read_checkouts,unauthenticated_write_checkouts
+```
+
+The command writes a Storefront API token to ignored `apps/storefront/.env` only when `SHOPIFY_CREATE_STOREFRONT_TOKEN=true` is set. Real storefront tokens must remain outside source control.
+
 ## Required Review
 
 Live Shopify changes require product projection review because they affect customer-facing commerce data. Deletion behavior also requires explicit review because it can remove products from the shop.

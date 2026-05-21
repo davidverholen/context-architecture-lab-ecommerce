@@ -23,6 +23,7 @@
     "akeneo:emit-sample": "node scripts/akeneo-emit-sample-event.mjs",
     "shopify:agent-check": "node scripts/shopify-agent-check.mjs",
     "shopify:project-sample": "tsx scripts/shopify-live-project-sample.ts",
+    "shopify:publish-sample": "tsx scripts/shopify-live-publish-sample.ts",
     "storefront:dev": "shopify hydrogen dev --path apps/storefront --codegen",
     "storefront:build": "shopify hydrogen build --path apps/storefront --codegen",
     "storefront:typecheck": "npm --prefix apps/storefront run typecheck",

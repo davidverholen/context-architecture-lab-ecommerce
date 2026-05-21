@@ -127,6 +127,12 @@ Run the optional local Hydrogen storefront:
 npm run storefront:dev
 ```
 
+Run the approved dev-shop sample publication smoke path after expanded Shopify CLI scopes are granted:
+
+```sh
+npm run shopify:publish-sample
+```
+
 Example local product projection request:
 
 ```sh

@@ -36,7 +36,7 @@ server.registerTool(
   "shopify_check_connection",
   {
     title: "Check Shopify Agent Connection",
-    description: "Use this to verify the agent's Shopify Admin API token and identify the configured shop without exposing the token.",
+    description: "Use this to verify the configured Shopify Admin agent connection and identify the configured shop without exposing credentials.",
     inputSchema: {},
     annotations: {
       readOnlyHint: true,
@@ -112,7 +112,9 @@ server.registerTool(
   },
   async ({ query, variables }) => {
     try {
-      const result = await shopifyGraphql(query, variables);
+      const result = await shopifyGraphql(query, variables, {
+        allowMutations: true
+      });
       return text(result);
     } catch (error) {
       return toolError(error);

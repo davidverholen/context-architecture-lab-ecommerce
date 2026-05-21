@@ -5,7 +5,7 @@ This repo-local MCP server gives Codex an operator/architect interface to a Shop
 It is intentionally separate from `.env`:
 
 - Project runtime sync uses `SHOPIFY_ADMIN_ACCESS_TOKEN` in `.env`.
-- Agent/operator access uses `SHOPIFY_AGENT_ADMIN_ACCESS_TOKEN` in ignored `.env.agent`.
+- Agent/operator access uses Shopify CLI auth or `SHOPIFY_AGENT_ADMIN_ACCESS_TOKEN` in ignored `.env.agent`.
 
 ## Credentials
 
@@ -19,11 +19,30 @@ Fill:
 
 ```sh
 SHOPIFY_AGENT_SHOP_DOMAIN=your-shop.myshopify.com
-SHOPIFY_AGENT_ADMIN_ACCESS_TOKEN=<private-shopify-agent-token>
+SHOPIFY_AGENT_AUTH_MODE=cli
+SHOPIFY_AGENT_ADMIN_ACCESS_TOKEN=
 SHOPIFY_AGENT_API_VERSION=2026-04
 ```
 
 Do not commit `.env.agent`.
+
+For CLI mode, authenticate the store once:
+
+```sh
+shopify store auth --store your-shop.myshopify.com --scopes read_products,write_products
+```
+
+Run this from your own interactive terminal. The command opens a browser
+authorization page and stores an online access token for later Shopify CLI
+store commands. A general Shopify CLI or organization login is not enough for
+`shopify store execute`.
+
+Set `SHOPIFY_AGENT_AUTH_MODE=token` only when using a dedicated Admin API token:
+
+```sh
+SHOPIFY_AGENT_AUTH_MODE=token
+SHOPIFY_AGENT_ADMIN_ACCESS_TOKEN=<private-shopify-agent-token>
+```
 
 ## Minimum Scopes
 

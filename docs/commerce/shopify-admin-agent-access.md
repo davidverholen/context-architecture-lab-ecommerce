@@ -42,7 +42,7 @@ flowchart LR
 
 Runtime sync uses private `.env` values such as `SHOPIFY_ADMIN_ACCESS_TOKEN`.
 
-Agent/operator access uses ignored `.env.agent` values such as `SHOPIFY_AGENT_ADMIN_ACCESS_TOKEN`.
+Agent/operator access uses ignored `.env.agent` values. Prefer `SHOPIFY_AGENT_AUTH_MODE=cli` for local operator access after running `shopify store auth` for the target shop from an interactive local terminal. A general Shopify CLI login or organization login is not enough for `shopify store execute`; the store auth command stores an online token for later store commands. Use `SHOPIFY_AGENT_AUTH_MODE=token` only when a dedicated Admin API token is intentionally configured.
 
 Do not commit real Admin API tokens, generated credential files, Shopify CLI auth files, screenshots containing credentials, or copied GraphQL responses that expose secrets.
 

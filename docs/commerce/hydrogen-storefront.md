@@ -82,6 +82,8 @@ Connecting to the real Shopify shop requires a Storefront API token or a linked 
 
 For this project, the preferred path is to create or link a storefront through Shopify's Headless/Hydrogen channel, copy or pull the Storefront API environment values into the ignored `apps/storefront/.env`, and then publish approved products to the appropriate storefront sales channel. The local operator command `npm run shopify:publish-sample` can also write a generated Storefront token to `apps/storefront/.env` when run with `SHOPIFY_CREATE_STOREFRONT_TOKEN=true` after the required unauthenticated scopes are granted. Until then, the scaffold can run against Mock.shop.
 
+The Shopify Hydrogen sales channel must be installed on the target shop before `shopify hydrogen link` can connect the local app to a real Hydrogen storefront. If the sales channel is not installed, local Hydrogen will continue to fall back to Mock.shop unless `apps/storefront/.env` is populated through another approved Storefront API token path.
+
 ## Review Gates
 
 Hydrogen changes require storefront review when they affect:

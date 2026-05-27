@@ -157,6 +157,10 @@ shopify store auth --store your-shop.myshopify.com --scopes read_products,write_
 
 The command writes a Storefront API token to ignored `apps/storefront/.env` only when `SHOPIFY_CREATE_STOREFRONT_TOKEN=true` is set. Real storefront tokens must remain outside source control.
 
+For Shopify Admin API `2026-04`, the smoke-test inventory update uses the current available quantity as `changeFromQuantity` and sends an idempotency key with `inventorySetQuantities`. Shopify removed the legacy `ignoreCompareQuantity` and `compareQuantity` inventory-set fields in this API version.
+
+Storefront token creation through `SHOPIFY_CREATE_STOREFRONT_TOKEN=true` depends on the authorized app and shop setup having the required unauthenticated Storefront access. If that token creation is denied, install or configure the Hydrogen/Headless storefront channel and use `shopify hydrogen link` plus `shopify hydrogen env pull` to populate the ignored storefront environment instead.
+
 ## Required Review
 
 Live Shopify changes require product projection review because they affect customer-facing commerce data. Deletion behavior also requires explicit review because it can remove products from the shop.

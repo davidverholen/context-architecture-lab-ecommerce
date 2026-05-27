@@ -227,8 +227,8 @@ mutation ActivateInventoryItem($inventoryItemId: ID!, $locationId: ID!, $availab
 `;
 
 const INVENTORY_SET_MUTATION = `
-mutation SetSampleInventory($input: InventorySetQuantitiesInput!) {
-  inventorySetQuantities(input: $input) {
+mutation SetSampleInventory($input: InventorySetQuantitiesInput!, $idempotencyKey: String!) {
+  inventorySetQuantities(input: $input) @idempotent(key: $idempotencyKey) {
     inventoryAdjustmentGroup {
       createdAt
       reason
@@ -420,6 +420,10 @@ function pickVariant(product: Product, sku: string | undefined): ProductVariant 
   return variant;
 }
 
+function availableQuantity(level: InventoryLevel): number {
+  return level.quantities.find((quantity) => quantity.name === "available")?.quantity ?? 0;
+}
+
 function upsertEnvValue(lines: string[], key: string, value: string): string[] {
   const assignment = `${key}=${value}`;
   const existingIndex = lines.findIndex((line) => line.startsWith(`${key}=`));
@@ -565,6 +569,7 @@ try {
     );
     assertNoUserErrors(inventoryActivation.inventoryActivate.userErrors, "Activate inventory at location");
   } else {
+    const currentAvailableQuantity = availableQuantity(existingLevel);
     const inventorySet = assertNoGraphqlErrors<{
       inventorySetQuantities: {
         userErrors: Array<{ field?: string[] | null; message: string }>;
@@ -576,16 +581,17 @@ try {
           input: {
             name: "available",
             reason: "correction",
-            ignoreCompareQuantity: true,
             referenceDocumentUri: `gid://context-architecture-lab/ShopifyPublishSmoke/${pimProductId}`,
             quantities: [
               {
                 inventoryItemId: variant.inventoryItem.id,
                 locationId: location.id,
-                quantity
+                quantity,
+                changeFromQuantity: currentAvailableQuantity
               }
             ]
-          }
+          },
+          idempotencyKey: randomBytes(16).toString("hex")
         },
         { shopDomain, accessToken, apiVersion, authMode }
       ),

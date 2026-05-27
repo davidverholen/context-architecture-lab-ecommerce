@@ -27,6 +27,7 @@
     "shopify:seed-demo-catalog": "tsx scripts/shopify-seed-demo-catalog.ts",
     "shopify:sync-akeneo-demo-catalog": "tsx scripts/shopify-seed-demo-catalog.ts",
     "storefront:dev": "shopify hydrogen dev --path apps/storefront --codegen",
+    "storefront:dev:account": "shopify hydrogen dev --path apps/storefront --codegen --customer-account-push",
     "storefront:build": "shopify hydrogen build --path apps/storefront --codegen",
     "storefront:typecheck": "npm --prefix apps/storefront run typecheck",
     "storefront:check-agent-rules": "node scripts/storefront-sync-agent-rules.mjs",

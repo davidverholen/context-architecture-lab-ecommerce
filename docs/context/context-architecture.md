@@ -20,7 +20,7 @@ This lab treats Context Architecture as a boundary model plus an operating model
 The repository demonstrates enterprise decision boundaries, not enterprise scale. The current bounded contexts are intentionally small:
 
 - Product data governance and enrichment: PIM/Akeneo interpretation, with optional Akeneo CE setup allowed only behind the product export boundary from ADR-005.
-- Commerce projection: Shopify-facing product and customer experience concepts, including optional Hydrogen storefront consumption, with official Shopify docs as source of truth for API behavior.
+- Commerce projection: Shopify-facing product and customer experience concepts, including optional Hydrogen storefront consumption and Shopify-standard checkout/account integration, with official Shopify docs as source of truth for API behavior.
 - Integration workflow: n8n as the visible local workflow layer, with official n8n docs as source of truth for runtime behavior.
 - Custom service boundary: validation, domain logic, idempotency, auditability, and complex error handling.
 - Fulfillment boundary: mock WMS contracts and fulfillment-facing examples.
@@ -57,4 +57,4 @@ Context selection uses this precedence:
 
 ## MVP Boundary
 
-MVP v0.1 must not add Paperclip Teams, RAG, or Cloud Run deployment unless explicitly requested and passed through governance and scope review. Akeneo CE is approved only as optional local setup behind the product export/projection boundary. Live Shopify sync is approved only as an optional `shopify-admin-target` adapter behind ADR-006. Hydrogen is approved only as an optional storefront boundary behind ADR-007. Making any optional integration a default dependency requires review.
+MVP v0.1 must not add Paperclip Teams, RAG, or Cloud Run deployment unless explicitly requested and passed through governance and scope review. Akeneo CE is approved only as optional local setup behind the product export/projection boundary. Live Shopify sync is approved only as an optional `shopify-admin-target` adapter behind ADR-006. Hydrogen is approved only as an optional storefront boundary behind ADR-007, with hosted checkout and standard account routes governed by ADR-008. Making any optional integration a default dependency requires review.

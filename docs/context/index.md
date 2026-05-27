@@ -40,4 +40,4 @@ For architecture or governance changes, read:
 - Use handoffs for cross-context interpretation, approval, exceptions, and obligations.
 - Treat review findings as learning signals, but curate before promoting them to durable memory.
 - Propose `AGENTS.md` diffs for durable agent operating rules; do not silently rewrite project principles.
-- Preserve MVP v0.1 exclusions unless explicitly requested and approved: Paperclip Teams, RAG, and Cloud Run deployment. Treat Akeneo CE as optional local setup governed by ADR-005, live Shopify sync as an optional adapter governed by ADR-006, and Hydrogen as an optional storefront boundary governed by ADR-007, not as default dependencies.
+- Preserve MVP v0.1 exclusions unless explicitly requested and approved: Paperclip Teams, RAG, and Cloud Run deployment. Treat Akeneo CE as optional local setup governed by ADR-005, live Shopify sync as an optional adapter governed by ADR-006, Hydrogen as an optional storefront boundary governed by ADR-007, and hosted checkout/customer account route scope as governed by ADR-008, not as default dependencies.

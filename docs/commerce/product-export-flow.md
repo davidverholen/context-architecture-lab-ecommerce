@@ -1,6 +1,6 @@
 # Product Export Flow
 
-This page specifies the product export and projection flow for optional local Akeneo CE and optional Shopify live sync. The durable decisions are [ADR-005](../decisions/ADR-005-product-export-projection-flow.md), [ADR-006](../decisions/ADR-006-shopify-live-target-adapter.md), and [ADR-007](../decisions/ADR-007-hydrogen-storefront-boundary.md).
+This page specifies the product export and projection flow for optional local Akeneo CE and optional Shopify live sync. The durable decisions are [ADR-005](../decisions/ADR-005-product-export-projection-flow.md), [ADR-006](../decisions/ADR-006-shopify-live-target-adapter.md), [ADR-007](../decisions/ADR-007-hydrogen-storefront-boundary.md), and [ADR-008](../decisions/ADR-008-shopify-checkout-and-customer-account-mvp.md).
 
 ## Intent
 
@@ -89,6 +89,7 @@ Real Shopify owns:
 Hydrogen owns:
 
 - Optional customer-facing storefront reads through Storefront API patterns.
+- Shopify-hosted checkout redirect and Shopify-standard account route rendering as described in [Hydrogen Storefront](hydrogen-storefront.md).
 - Storefront presentation and routing after official-doc verification.
 - Private storefront environment values outside source control.
 

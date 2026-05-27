@@ -108,7 +108,20 @@ Routing outcome:
 - Durable decision recorded in [ADR-007](../decisions/ADR-007-hydrogen-storefront-boundary.md).
 - Storefront interpretation added in [Hydrogen Storefront](../commerce/hydrogen-storefront.md).
 - MVP scope and context packs updated to allow Hydrogen only through the documented boundary.
-- Open questions preserved for scaffold path, Storefront API version, route scope, Oxygen/deployment, and customer-account behavior.
+- Open questions preserved for scaffold path, Storefront API version, route scope, Oxygen/deployment, and expanded customer-data behavior.
+
+### Shopify Checkout And Accounts Need Explicit Ownership
+
+Source signal: explicit request to include basic ecommerce checkout and customer account behavior in the Hydrogen MVP.
+
+Learning: checkout and account routes are basic Shopify storefront functions, but they still cross customer-data and checkout boundaries. The safe MVP shape is Shopify-hosted checkout redirect plus Shopify-standard Customer Account API routes, with Shopify as the system of record and Hydrogen limited to route/UI/session integration.
+
+Routing outcome:
+
+- Durable decision recorded in [ADR-008](../decisions/ADR-008-shopify-checkout-and-customer-account-mvp.md).
+- Storefront interpretation updated in [Hydrogen Storefront](../commerce/hydrogen-storefront.md).
+- Context packs, overview docs, and the Shopify checklist now distinguish approved Shopify-standard behavior from custom checkout/account management.
+- Open questions preserved for manual smoke-test evidence, analytics attribution, custom checkout behavior, and customer data beyond the approved route scope.
 
 ### Shopify Admin Agent Access Needs A Runtime Split
 

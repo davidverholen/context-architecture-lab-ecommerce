@@ -81,13 +81,14 @@ Stop conditions: Shopify credentials in repo, unverified Shopify limits, unverif
 - [Shopify Product Model](../commerce/shopify-product-model.md)
 - [Shopify Live Sync](../commerce/shopify-live-sync.md)
 - [ADR-007: Hydrogen Storefront Boundary](../decisions/ADR-007-hydrogen-storefront-boundary.md)
+- [ADR-008: Shopify Checkout And Customer Account MVP](../decisions/ADR-008-shopify-checkout-and-customer-account-mvp.md)
 - [ADR-002: PIM Shop Projection](../decisions/ADR-002-pim-shop-projection.md)
 - [ADR-006: Shopify Live Target Adapter](../decisions/ADR-006-shopify-live-target-adapter.md)
 - [Shopify Change Checklist](../checklists/shopify-change-checklist.md)
 - [Shopify Sources](../../sources/external/shopify/README.md)
 
-Stop conditions: Storefront tokens in repo, Admin API writes from Hydrogen, customer account or checkout behavior, unverified Storefront API behavior, deployment topology changes, or changing whether PIM/Akeneo remains product master.
+Stop conditions: Storefront tokens in repo, Customer Account API values in repo, Admin API writes from Hydrogen, custom checkout or custom account-management behavior, customer data beyond Shopify-standard account/order route rendering, unverified Storefront API or Customer Account API behavior, deployment topology changes, or changing whether PIM/Akeneo remains product master.
 
 ## MVP Forbidden Context
 
-For MVP v0.1, do not use context packs to smuggle in implementation of Paperclip Teams, RAG, Cloud Run deployment, or default production Shopify sync. Those require explicit scope and governance review. Akeneo CE is permitted only through the optional local setup and product export boundary from [ADR-005](../decisions/ADR-005-product-export-projection-flow.md). Live Shopify sync is permitted only through the optional adapter boundary from [ADR-006](../decisions/ADR-006-shopify-live-target-adapter.md). Hydrogen is permitted only through the optional storefront boundary from [ADR-007](../decisions/ADR-007-hydrogen-storefront-boundary.md).
+For MVP v0.1, do not use context packs to smuggle in implementation of Paperclip Teams, RAG, Cloud Run deployment, or default production Shopify sync. Those require explicit scope and governance review. Akeneo CE is permitted only through the optional local setup and product export boundary from [ADR-005](../decisions/ADR-005-product-export-projection-flow.md). Live Shopify sync is permitted only through the optional adapter boundary from [ADR-006](../decisions/ADR-006-shopify-live-target-adapter.md). Hydrogen is permitted only through the optional storefront boundary from [ADR-007](../decisions/ADR-007-hydrogen-storefront-boundary.md), with Shopify-hosted checkout and Shopify-standard customer account route scope governed by [ADR-008](../decisions/ADR-008-shopify-checkout-and-customer-account-mvp.md).

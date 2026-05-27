@@ -49,7 +49,7 @@ Handoffs operationalize context maps and published language. They let one contex
 In this lab:
 
 - Product projection changes must preserve the PIM/Akeneo-to-Shopify boundary and use schemas/examples as published language.
-- Storefront changes must preserve the split between Hydrogen Storefront API reads, product projection writes, Admin API credentials, checkout, and customer data ownership.
+- Storefront changes must preserve the split between Hydrogen Storefront API reads, Shopify-standard Customer Account API route rendering, Shopify-hosted checkout redirect, product projection writes, Admin API credentials, checkout ownership, and customer data ownership.
 - Agent/operator Shopify Admin access must preserve the split between explicit tool access, runtime sync, and accountable review gates.
 - Order integration and fulfillment changes must preserve the split between n8n orchestration, custom service logic, and mock WMS contracts.
 - Governance changes must preserve human accountability, review gates, and explicit decision rights.

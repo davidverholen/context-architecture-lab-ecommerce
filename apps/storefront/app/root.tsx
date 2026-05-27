@@ -33,6 +33,13 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
   // revalidate when manually revalidating via useRevalidator
   if (currentUrl.toString() === nextUrl.toString()) return true;
 
+  if (
+    currentUrl.pathname.startsWith('/account') ||
+    nextUrl.pathname.startsWith('/account')
+  ) {
+    return true;
+  }
+
   // Defaulting to no revalidation for root loader data to improve performance.
   // When using this feature, you risk your UI getting out of sync with your server.
   // Use with caution. If you are uncomfortable with this optimization, update the
@@ -72,11 +79,13 @@ export async function loader(args: Route.LoaderArgs) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  const {storefront, env} = args.context;
+  const {customerAccount, storefront, env} = args.context;
+  const isLoggedIn = await customerAccount.isLoggedIn().catch(() => false);
 
   return {
     ...deferredData,
     ...criticalData,
+    isLoggedIn,
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
       storefront,

@@ -10,7 +10,7 @@ The customer-facing commerce representation derived from governed PIM data. Shop
 
 ## Hydrogen Storefront
 
-The optional customer-facing storefront boundary governed by [ADR-007](../decisions/ADR-007-hydrogen-storefront-boundary.md). Hydrogen consumes Shopify through Storefront API patterns and does not own product projection writes.
+The optional customer-facing storefront boundary governed by [ADR-007](../decisions/ADR-007-hydrogen-storefront-boundary.md) and [ADR-008](../decisions/ADR-008-shopify-checkout-and-customer-account-mvp.md). Hydrogen consumes Shopify through Storefront API and Customer Account API patterns, redirects to Shopify-hosted checkout, and does not own product projection writes, checkout, payments, orders, authentication, or customer records.
 
 ## n8n
 

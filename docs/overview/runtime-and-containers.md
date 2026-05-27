@@ -15,7 +15,7 @@ flowchart TB
 
   Human -->|"runs local stack, reviews changes"| Lab
   Agent -->|"implements bounded changes"| Lab
-  Lab -->|"source authority for Shopify, Storefront API, and Hydrogen behavior"| ShopifyDocs
+  Lab -->|"source authority for Shopify, Storefront API, Customer Account API, and Hydrogen behavior"| ShopifyDocs
   Lab -->|"source authority for n8n behavior"| N8NDocs
   Lab -->|"source authority before deployment work"| CloudRunDocs
 ```
@@ -60,7 +60,7 @@ flowchart LR
   PPS -->|"default POST /products/projections"| MS
   PPS -. "profile shopify-live" .-> SAT
   SAT -. "Admin GraphQL" .-> Shopify
-  Hydrogen -. "Storefront API" .-> Shopify
+  Hydrogen -. "Storefront API\nCustomer Account API\nhosted checkout redirect" .-> Shopify
   Samples --> CIS
   Samples --> PPS
   Schemas --> CIS
@@ -75,18 +75,18 @@ flowchart LR
 
 ## Service Responsibilities
 
-| Service | Responsibility | Health | Dockerfile |
-| --- | --- | --- | --- |
-| `commerce-integration-service` | Validate Shopify order-created samples and map to canonical and mock WMS orders. | `GET /health` | `services/commerce-integration-service/Dockerfile` |
-| `mock-wms` | Accept mock WMS orders unless SKU mapping is missing. | `GET /health` | `services/mock-wms/Dockerfile` |
-| `mock-pim` | Return governed rug product fixture data. | `GET /health` | `services/mock-pim/Dockerfile` |
-| `governance-service` | Classify change requests and return review gate decisions. | `GET /health` | `services/governance-service/Dockerfile` |
-| `akeneo-event-bridge` | Normalize local Akeneo webhook envelopes to the product export contract and forward rug events to n8n. | `GET /health` | `services/akeneo-event-bridge/Dockerfile` |
-| `product-projection-service` | Validate Akeneo exports and map governed PIM products to Shopify projection payloads. | `GET /health` | `services/product-projection-service/Dockerfile` |
-| `mock-shopify` | Receive Shopify-style product projection dumps before real Shopify integration. | `GET /health` | `services/mock-shopify/Dockerfile` |
-| `shopify-admin-target` | Optional live Shopify Admin GraphQL adapter for product projection upserts and removals. | `GET /health` | `services/shopify-admin-target/Dockerfile` |
+| Service                        | Responsibility                                                                                         | Health        | Dockerfile                                         |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------ | ------------- | -------------------------------------------------- |
+| `commerce-integration-service` | Validate Shopify order-created samples and map to canonical and mock WMS orders.                       | `GET /health` | `services/commerce-integration-service/Dockerfile` |
+| `mock-wms`                     | Accept mock WMS orders unless SKU mapping is missing.                                                  | `GET /health` | `services/mock-wms/Dockerfile`                     |
+| `mock-pim`                     | Return governed rug product fixture data.                                                              | `GET /health` | `services/mock-pim/Dockerfile`                     |
+| `governance-service`           | Classify change requests and return review gate decisions.                                             | `GET /health` | `services/governance-service/Dockerfile`           |
+| `akeneo-event-bridge`          | Normalize local Akeneo webhook envelopes to the product export contract and forward rug events to n8n. | `GET /health` | `services/akeneo-event-bridge/Dockerfile`          |
+| `product-projection-service`   | Validate Akeneo exports and map governed PIM products to Shopify projection payloads.                  | `GET /health` | `services/product-projection-service/Dockerfile`   |
+| `mock-shopify`                 | Receive Shopify-style product projection dumps before real Shopify integration.                        | `GET /health` | `services/mock-shopify/Dockerfile`                 |
+| `shopify-admin-target`         | Optional live Shopify Admin GraphQL adapter for product projection upserts and removals.               | `GET /health` | `services/shopify-admin-target/Dockerfile`         |
 
-Hydrogen is documented as an optional storefront boundary in [Hydrogen Storefront](../commerce/hydrogen-storefront.md). The scaffold lives under [apps/storefront](../../apps/storefront/) and is not part of the default Docker Compose stack.
+Hydrogen is documented as an optional storefront boundary in [Hydrogen Storefront](../commerce/hydrogen-storefront.md). The checkout and customer account MVP scope is recorded in [ADR-008](../decisions/ADR-008-shopify-checkout-and-customer-account-mvp.md). The scaffold lives under [apps/storefront](../../apps/storefront/) and is not part of the default Docker Compose stack.
 
 ## Workflow Lifecycle
 
@@ -200,13 +200,14 @@ sequenceDiagram
   end
 ```
 
-## Runtime Flow: Hydrogen Storefront Read
+## Runtime Flow: Hydrogen Storefront Read And Checkout
 
 ```mermaid
 sequenceDiagram
   participant Browser as Customer browser
   participant Hydrogen as Hydrogen storefront
   participant Shopify as Shopify Storefront API
+  participant Checkout as Shopify hosted checkout
   participant Projection as Product projection flow
 
   Projection-->>Shopify: optional live projection writes through shopify-admin-target
@@ -214,6 +215,26 @@ sequenceDiagram
   Hydrogen->>Shopify: Storefront API query
   Shopify-->>Hydrogen: customer-facing product projection
   Hydrogen-->>Browser: rendered storefront response
+  Browser->>Hydrogen: open cart and click checkout
+  Hydrogen-->>Browser: redirect to Shopify cart checkoutUrl
+  Browser->>Checkout: complete hosted checkout
+```
+
+## Runtime Flow: Customer Account
+
+```mermaid
+sequenceDiagram
+  participant Browser as Customer browser
+  participant Hydrogen as Hydrogen storefront
+  participant Account as Shopify Customer Account API
+
+  Browser->>Hydrogen: request /account
+  Hydrogen-->>Browser: redirect to /account/login when unauthenticated
+  Browser->>Account: Shopify-hosted login
+  Account-->>Hydrogen: OAuth callback to /account/authorize
+  Hydrogen->>Account: exchange token and query customer/orders
+  Account-->>Hydrogen: logged-in customer order data
+  Hydrogen-->>Browser: account or order page with no-store headers
 ```
 
 ## Notes

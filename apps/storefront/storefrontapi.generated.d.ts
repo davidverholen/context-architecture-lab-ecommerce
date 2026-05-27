@@ -113,7 +113,7 @@ export type CartLineComponentFragment = Pick<
 
 export type CartApiQueryFragment = Pick<
   StorefrontAPI.Cart,
-  'updatedAt' | 'id' | 'totalQuantity' | 'note'
+  'updatedAt' | 'id' | 'checkoutUrl' | 'totalQuantity' | 'note'
 > & {
   lines: {
     nodes: Array<

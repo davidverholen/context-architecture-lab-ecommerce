@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted by explicit MVP scope request on 2026-05-21.
+Accepted by explicit MVP scope request on 2026-05-21. Amended by [ADR-008](ADR-008-shopify-checkout-and-customer-account-mvp.md).
 
 ## Context
 
@@ -25,20 +25,22 @@ Include Hydrogen in MVP v0.1 as an optional storefront boundary, not as the prod
 - Hydrogen credentials and storefront tokens stay outside source control in private environment configuration.
 - The default local product projection path remains `mock-shopify`.
 - Live Shopify sync remains opt-in through [ADR-006](ADR-006-shopify-live-target-adapter.md).
-- Oxygen deployment, self-hosted production deployment, Customer Account API, checkout behavior, and customer data handling require separate review before implementation.
+- Oxygen deployment and self-hosted production deployment require separate review before implementation.
+- Shopify-hosted checkout redirects and Shopify-standard Customer Account API routes are governed by [ADR-008](ADR-008-shopify-checkout-and-customer-account-mvp.md).
 
 ## Consequences
 
 - MVP scope now includes a governed storefront boundary alongside product projection and order integration.
 - The Hydrogen app scaffold now lives under `apps/storefront`.
-- The scaffold keeps product, collection, search, page/content, and cart line behavior, but removes generated checkout redirects and Customer Account API routes until separate review.
-- Hydrogen source authority must be checked against official Shopify docs before API-specific code, environment setup, deployment setup, or customer-account behavior is added.
-- Storefront work becomes customer-facing commerce work and requires at least storefront review. Checkout and customer data changes require the customer data and checkout review gates.
+- The scaffold keeps product, collection, search, page/content, cart line behavior, Shopify-hosted checkout redirect, and Shopify-standard Customer Account API route behavior.
+- Hydrogen source authority must be checked against official Shopify docs before API-specific code, environment setup, deployment setup, customer-account behavior, or checkout behavior is changed.
+- Storefront work becomes customer-facing commerce work and requires at least storefront review. Checkout and customer data changes remain customer-data and checkout review-gate work under [ADR-008](ADR-008-shopify-checkout-and-customer-account-mvp.md).
 - The lab can explain the full loop from governed PIM data to Shopify projection to customer-facing headless storefront without adding production scale.
 
 ## Contract Artifacts
 
 - [Hydrogen Storefront](../commerce/hydrogen-storefront.md)
+- [ADR-008: Shopify Checkout And Customer Account MVP](ADR-008-shopify-checkout-and-customer-account-mvp.md)
 - [Shopify Product Model](../commerce/shopify-product-model.md)
 - [Shopify Live Sync](../commerce/shopify-live-sync.md)
 - [Product Export Flow](../commerce/product-export-flow.md)

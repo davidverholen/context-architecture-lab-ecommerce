@@ -11,6 +11,7 @@ import {useAside} from '~/components/Aside';
 interface HeaderProps {
   header: HeaderQuery;
   cart: Promise<CartApiQueryFragment | null>;
+  isLoggedIn: boolean;
   publicStoreDomain: string;
 }
 
@@ -19,6 +20,7 @@ type Viewport = 'desktop' | 'mobile';
 export function Header({
   header,
   cart,
+  isLoggedIn,
   publicStoreDomain,
 }: HeaderProps) {
   const {menu} = header;
@@ -43,7 +45,7 @@ export function Header({
           primaryDomainUrl={header.shop.primaryDomain.url}
           publicStoreDomain={publicStoreDomain}
         />
-        <HeaderCtas cart={cart} />
+        <HeaderCtas cart={cart} isLoggedIn={isLoggedIn} />
       </header>
     </>
   );
@@ -66,12 +68,7 @@ export function HeaderMenu({
   return (
     <nav className={className} role="navigation">
       {viewport === 'mobile' && (
-        <NavLink
-          end
-          onClick={close}
-          prefetch="intent"
-            to="/"
-        >
+        <NavLink end onClick={close} prefetch="intent" to="/">
           Home
         </NavLink>
       )}
@@ -102,11 +99,17 @@ export function HeaderMenu({
   );
 }
 
-function HeaderCtas({cart}: Pick<HeaderProps, 'cart'>) {
+function HeaderCtas({
+  cart,
+  isLoggedIn,
+}: Pick<HeaderProps, 'cart' | 'isLoggedIn'>) {
   return (
     <nav className="header-ctas" role="navigation">
       <HeaderMenuMobileToggle />
       <SearchToggle />
+      <NavLink className="header-action" prefetch="intent" to="/account">
+        {isLoggedIn ? 'Account' : 'Sign in'}
+      </NavLink>
       <CartToggle cart={cart} />
     </nav>
   );

@@ -4,7 +4,7 @@ This page describes the optional live Shopify target for the Akeneo product proj
 
 Live Shopify sync is a development-store projection target. It does not make Shopify the product master.
 
-Hydrogen storefront work, governed by [Hydrogen Storefront](hydrogen-storefront.md) and [ADR-007](../decisions/ADR-007-hydrogen-storefront-boundary.md), consumes the Shopify projection through Storefront API patterns. It must not bypass this adapter for Admin API product writes.
+Hydrogen storefront work, governed by [Hydrogen Storefront](hydrogen-storefront.md), [ADR-007](../decisions/ADR-007-hydrogen-storefront-boundary.md), and [ADR-008](../decisions/ADR-008-shopify-checkout-and-customer-account-mvp.md), consumes the Shopify projection through Storefront API patterns and uses Shopify-standard checkout/account boundaries. It must not bypass this adapter for Admin API product writes.
 
 Repo-local operator access to Shopify Admin GraphQL is governed separately by [Shopify Admin Agent Access](shopify-admin-agent-access.md). It is not the runtime sync path and must not become autonomous product projection.
 

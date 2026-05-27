@@ -10,6 +10,9 @@
 - [ ] Confirm repo-local Admin API agent access, if used, is explicit operator access and not the runtime sync path.
 - [ ] Confirm Hydrogen, when used, reads through Storefront API patterns and does not perform Admin API writes.
 - [ ] Keep Hydrogen storefront tokens and Customer Account API values outside source control.
+- [ ] For checkout, confirm Hydrogen only redirects to Shopify-hosted checkout through cart `checkoutUrl`; no custom checkout, payment, or order creation logic is introduced.
+- [ ] For customer accounts, confirm routes use Hydrogen's Customer Account client and only render Shopify-standard account/order data for the logged-in customer.
+- [ ] Confirm account route responses are uncached and root/header data does not expose customer PII.
 - [ ] Confirm Shopify `productSet` custom ID definitions use the required Shopify metafield type and unique-value capability before relying on custom ID upserts.
 - [ ] Prefer native Shopify fields first.
 - [ ] Use variants only for purchasable differences.
@@ -21,4 +24,4 @@
 - [ ] Validate removal examples when create/update/delete behavior changes.
 - [ ] Confirm Akeneo deletion maps to archive unless permanent deletion is explicitly reviewed and configured.
 - [ ] Require review for product projection changes.
-- [ ] Require review for Hydrogen storefront behavior, and customer data or checkout review for Customer Account API and checkout changes.
+- [ ] Require review for Hydrogen storefront behavior, and customer data or checkout review for Customer Account API and checkout changes beyond ADR-008's approved MVP scope.

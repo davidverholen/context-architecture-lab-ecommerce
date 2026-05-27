@@ -25,9 +25,10 @@ These questions require official Shopify documentation verification before expan
 - Should the local Hydrogen app use values copied from the Shopify Headless channel, or link to a Shopify Hydrogen storefront and pull environment values with the Shopify CLI?
 - Which projected Shopify products should be made active and published for storefront smoke tests?
 - Should the MVP use the Hydrogen channel and Oxygen preview deployments, or keep deployment deferred?
-- What is the exact review gate and approval evidence for enabling checkout redirects, Customer Account API, analytics attribution, and customer data behavior?
+- What manual evidence should be required before treating local Shopify-hosted checkout and Customer Account API smoke tests as review-complete?
+- What is the exact review gate and approval evidence for analytics attribution changes, custom checkout behavior, or customer data behavior beyond Shopify-standard account/order route rendering?
 
-These questions require official Shopify documentation verification before storefront implementation. The current boundary interpretation lives in [Hydrogen Storefront](../commerce/hydrogen-storefront.md).
+These questions require official Shopify documentation verification before expanding storefront implementation. The current boundary interpretation lives in [Hydrogen Storefront](../commerce/hydrogen-storefront.md).
 
 ## Local Infrastructure
 

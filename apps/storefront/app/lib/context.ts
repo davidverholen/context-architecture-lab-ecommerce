@@ -49,6 +49,9 @@ export async function createHydrogenRouterContext(
       session,
       // Or detect from URL path based on locale subpath, cookies, or any other strategy
       i18n: {language: 'EN', country: 'US'},
+      customerAccount: {
+        authUrl: '/account/authorize',
+      },
       cart: {
         queryFragment: CART_QUERY_FRAGMENT,
       },

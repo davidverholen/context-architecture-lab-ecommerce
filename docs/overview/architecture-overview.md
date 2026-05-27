@@ -11,7 +11,7 @@ MVP v0.1 does not implement:
 - Real Shopify credentials.
 - Patchworks.
 - Production Hydrogen or Oxygen deployment.
-- Customer account or checkout behavior.
+- Custom checkout, payment handling, profile/address/account mutations, subscriptions, returns, or customer-data ownership outside Shopify.
 - Cloud Run deployment.
 - Paperclip Teams.
 - RAG.
@@ -31,7 +31,7 @@ Live Shopify synchronization is optional dev-store infrastructure through [Shopi
 ## Constraints
 
 - Shopify is the customer-facing commerce projection, not the product master.
-- Hydrogen is a customer-facing storefront read boundary, not a product projection writer.
+- Hydrogen is a customer-facing Storefront API and Shopify-standard account route boundary, not a product projection writer or customer-data system of record.
 - Akeneo/PIM is the product governance and enrichment source.
 - n8n is a local visible workflow layer and iPaaS learning stand-in.
 - Custom services own validation, mapping, idempotency direction, auditability direction, and failure behavior.
@@ -51,7 +51,7 @@ The lab uses a small set of independently understandable pieces:
 - n8n workflow JSON for visible integration flow skeletons.
 - Product export/projection contracts before real Akeneo Event Platform or Shopify integration.
 - A local Akeneo webhook bridge before any production-like PIM event adapter.
-- Hydrogen storefront scaffold before customer account, checkout, or deployment behavior.
+- Hydrogen storefront scaffold with Shopify-hosted checkout redirect and Shopify-standard account route integration before deployment behavior.
 
 ## Context Boundary Summary
 
@@ -60,7 +60,7 @@ flowchart LR
   PIM["Mock PIM / Akeneo CE\nProduct governance and enrichment"]
   Bridge["akeneo-event-bridge\nWebhook adapter"]
   Shopify["Shopify shop / concept\nCustomer-facing commerce projection"]
-  Hydrogen["Hydrogen storefront\nOptional read boundary"]
+  Hydrogen["Hydrogen storefront\nOptional customer-facing boundary"]
   N8N["n8n\nVisible workflow orchestration"]
   Services["Custom TypeScript services\nValidation, mapping, governance"]
   WMS["Mock WMS\nFulfillment integration boundary"]
@@ -71,7 +71,7 @@ flowchart LR
   PIM -->|"product webhook events"| Bridge
   Bridge -->|"normalized rug events"| N8N
   PIM -->|"governed product data"| Shopify
-  Hydrogen -. "Storefront API reads" .-> Shopify
+  Hydrogen -. "Storefront API reads\nhosted checkout\nCustomer Account API" .-> Shopify
   Shopify -->|"order-created sample"| N8N
   N8N -->|"local HTTP calls"| Services
   Services -->|"mock WMS order"| WMS

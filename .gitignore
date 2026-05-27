@@ -14,3 +14,4 @@ apps/storefront/.react-router
 apps/storefront/.cursor
 *.tsbuildinfo
 *.log
+.shopify

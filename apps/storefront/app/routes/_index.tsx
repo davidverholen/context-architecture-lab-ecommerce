@@ -4,7 +4,8 @@ import {Suspense} from 'react';
 import type {RecommendedProductsQuery} from 'storefrontapi.generated';
 import {ProductItem} from '~/components/ProductItem';
 import {MockShopNotice} from '~/components/MockShopNotice';
-import {productAttributeLabel} from '~/lib/productDomain';
+import {productAttributeLabel} from '~/lib/productAttributes';
+import {PRODUCT_CARD_FRAGMENT} from '~/lib/productFragments';
 import {HOME_HERO_IMAGE} from '~/lib/storefrontAssets';
 
 export const meta: Route.MetaFunction = () => {
@@ -35,7 +36,7 @@ function loadDeferredData({context}: Route.LoaderArgs) {
   const {storefront} = context;
   const recommendedProducts = storefront
     .query(RECOMMENDED_PRODUCTS_QUERY, {
-      cache: storefront.CacheNone(),
+      cache: storefront.CacheShort(),
       variables: {
         first: 8,
         query: 'tag:context-home-demo',
@@ -153,39 +154,6 @@ function RecommendedProducts({
   );
 }
 
-const PRODUCT_CARD_FRAGMENT = `#graphql
-  fragment MoneyRecommendedProduct on MoneyV2 {
-    amount
-    currencyCode
-  }
-  fragment RecommendedProduct on Product {
-    id
-    title
-    handle
-    material: metafield(namespace: "details", key: "material") {
-      value
-    }
-    style: metafield(namespace: "details", key: "style") {
-      value
-    }
-    priceRange {
-      minVariantPrice {
-        ...MoneyRecommendedProduct
-      }
-      maxVariantPrice {
-        ...MoneyRecommendedProduct
-      }
-    }
-    featuredImage {
-      id
-      url
-      altText
-      width
-      height
-    }
-  }
-` as const;
-
 const RECOMMENDED_PRODUCTS_QUERY = `#graphql
   query RecommendedProducts(
     $country: CountryCode
@@ -200,7 +168,7 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
       reverse: true
     ) {
       nodes {
-        ...RecommendedProduct
+        ...ProductCard
       }
     }
   }

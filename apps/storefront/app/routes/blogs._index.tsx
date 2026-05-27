@@ -7,17 +7,17 @@ import type {BlogsQuery} from 'storefrontapi.generated';
 type BlogNode = BlogsQuery['blogs']['nodes'][0];
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: `Hydrogen | Blogs`}];
+  return [
+    {title: 'Context Home | Blogs'},
+    {
+      name: 'description',
+      content: 'Read Context Home storefront content from Shopify.',
+    },
+  ];
 };
 
 export async function loader(args: Route.LoaderArgs) {
-  // Start fetching non-critical data without blocking time to first byte
-  const deferredData = loadDeferredData(args);
-
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args);
-
-  return {...deferredData, ...criticalData};
+  return await loadCriticalData(args);
 }
 
 /**
@@ -29,33 +29,26 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
     pageBy: 10,
   });
 
-  const [{blogs}] = await Promise.all([
-    context.storefront.query(BLOGS_QUERY, {
-      variables: {
-        ...paginationVariables,
-      },
-    }),
-    // Add other queries here, so that they are loaded in parallel
-  ]);
+  const {blogs} = await context.storefront.query(BLOGS_QUERY, {
+    cache: context.storefront.CacheShort(),
+    variables: {
+      ...paginationVariables,
+    },
+  });
 
   return {blogs};
-}
-
-/**
- * Load data for rendering content below the fold. This data is deferred and will be
- * fetched after the initial page load. If it's unavailable, the page should still 200.
- * Make sure to not throw any errors here, as it will cause the page to 500.
- */
-function loadDeferredData({context}: Route.LoaderArgs) {
-  return {};
 }
 
 export default function Blogs() {
   const {blogs} = useLoaderData<typeof loader>();
 
   return (
-    <div className="blogs">
-      <h1>Blogs</h1>
+    <div className="blogs page-shell">
+      <section className="collection-hero">
+        <p className="eyebrow">Journal</p>
+        <h1>Context Home notes.</h1>
+        <p>Optional Shopify blog content in the same storefront shell.</p>
+      </section>
       <div className="blogs-grid">
         <PaginatedResourceSection<BlogNode> connection={blogs}>
           {({node: blog}) => (

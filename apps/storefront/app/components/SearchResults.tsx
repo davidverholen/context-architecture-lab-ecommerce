@@ -1,9 +1,9 @@
 import {Link} from 'react-router';
 import {Image, Money, Pagination} from '@shopify/hydrogen';
 import {urlWithTrackingParams, type RegularSearchReturn} from '~/lib/search';
-import {productCardView} from '~/lib/productDomain';
+import {productCardView} from '~/lib/productPresentation';
 
-type SearchItems = RegularSearchReturn['result']['items'];
+type SearchItems = NonNullable<RegularSearchReturn['result']>['items'];
 type PartialSearchResult<ItemType extends keyof SearchItems> = Pick<
   SearchItems,
   ItemType

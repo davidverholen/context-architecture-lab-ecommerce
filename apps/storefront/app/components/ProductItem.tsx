@@ -1,21 +1,14 @@
 import {Link} from 'react-router';
 import {Image, Money} from '@shopify/hydrogen';
-import type {
-  ProductItemFragment,
-  CollectionItemFragment,
-  RecommendedProductFragment,
-} from 'storefrontapi.generated';
-import {productCardView} from '~/lib/productDomain';
+import type {ProductCardFragment} from 'storefrontapi.generated';
+import {productCardView} from '~/lib/productPresentation';
 import {useVariantUrl} from '~/lib/variants';
 
 export function ProductItem({
   product,
   loading,
 }: {
-  product:
-    | CollectionItemFragment
-    | ProductItemFragment
-    | RecommendedProductFragment;
+  product: ProductCardFragment;
   loading?: 'eager' | 'lazy';
 }) {
   const variantUrl = useVariantUrl(product.handle);

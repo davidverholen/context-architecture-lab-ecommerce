@@ -6,17 +6,11 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `Hydrogen | ${data?.blog.title ?? ''} blog`}];
+  return [{title: `Context Home | ${data?.blog.title ?? 'Blog'}`}];
 };
 
 export async function loader(args: Route.LoaderArgs) {
-  // Start fetching non-critical data without blocking time to first byte
-  const deferredData = loadDeferredData(args);
-
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args);
-
-  return {...deferredData, ...criticalData};
+  return await loadCriticalData(args);
 }
 
 /**
@@ -32,15 +26,13 @@ async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
     throw new Response(`blog not found`, {status: 404});
   }
 
-  const [{blog}] = await Promise.all([
-    context.storefront.query(BLOGS_QUERY, {
-      variables: {
-        blogHandle: params.blogHandle,
-        ...paginationVariables,
-      },
-    }),
-    // Add other queries here, so that they are loaded in parallel
-  ]);
+  const {blog} = await context.storefront.query(BLOGS_QUERY, {
+    cache: context.storefront.CacheShort(),
+    variables: {
+      blogHandle: params.blogHandle,
+      ...paginationVariables,
+    },
+  });
 
   if (!blog?.articles) {
     throw new Response('Not found', {status: 404});
@@ -51,22 +43,16 @@ async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
   return {blog};
 }
 
-/**
- * Load data for rendering content below the fold. This data is deferred and will be
- * fetched after the initial page load. If it's unavailable, the page should still 200.
- * Make sure to not throw any errors here, as it will cause the page to 500.
- */
-function loadDeferredData({context}: Route.LoaderArgs) {
-  return {};
-}
-
 export default function Blog() {
   const {blog} = useLoaderData<typeof loader>();
   const {articles} = blog;
 
   return (
-    <div className="blog">
-      <h1>{blog.title}</h1>
+    <div className="blog page-shell">
+      <section className="collection-hero">
+        <p className="eyebrow">Journal</p>
+        <h1>{blog.title}</h1>
+      </section>
       <div className="blog-grid">
         <PaginatedResourceSection<ArticleItemFragment> connection={articles}>
           {({node: article, index}) => (
@@ -143,7 +129,6 @@ const BLOGS_QUERY = `#graphql
         }
         pageInfo {
           hasPreviousPage
-          hasNextPage
           hasNextPage
           endCursor
           startCursor

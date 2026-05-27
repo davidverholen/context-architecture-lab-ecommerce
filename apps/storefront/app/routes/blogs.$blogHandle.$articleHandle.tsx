@@ -4,17 +4,11 @@ import {Image} from '@shopify/hydrogen';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `Hydrogen | ${data?.article.title ?? ''} article`}];
+  return [{title: `Context Home | ${data?.article.title ?? 'Article'}`}];
 };
 
 export async function loader(args: Route.LoaderArgs) {
-  // Start fetching non-critical data without blocking time to first byte
-  const deferredData = loadDeferredData(args);
-
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args);
-
-  return {...deferredData, ...criticalData};
+  return await loadCriticalData(args);
 }
 
 /**
@@ -28,12 +22,10 @@ async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
     throw new Response('Not found', {status: 404});
   }
 
-  const [{blog}] = await Promise.all([
-    context.storefront.query(ARTICLE_QUERY, {
-      variables: {blogHandle, articleHandle},
-    }),
-    // Add other queries here, so that they are loaded in parallel
-  ]);
+  const {blog} = await context.storefront.query(ARTICLE_QUERY, {
+    cache: context.storefront.CacheShort(),
+    variables: {blogHandle, articleHandle},
+  });
 
   if (!blog?.articleByHandle) {
     throw new Response(null, {status: 404});
@@ -56,15 +48,6 @@ async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
   return {article};
 }
 
-/**
- * Load data for rendering content below the fold. This data is deferred and will be
- * fetched after the initial page load. If it's unavailable, the page should still 200.
- * Make sure to not throw any errors here, as it will cause the page to 500.
- */
-function loadDeferredData({context}: Route.LoaderArgs) {
-  return {};
-}
-
 export default function Article() {
   const {article} = useLoaderData<typeof loader>();
   const {title, image, contentHtml, author} = article;
@@ -76,7 +59,7 @@ export default function Article() {
   }).format(new Date(article.publishedAt));
 
   return (
-    <div className="article">
+    <div className="article page-shell">
       <h1>
         {title}
         <div>

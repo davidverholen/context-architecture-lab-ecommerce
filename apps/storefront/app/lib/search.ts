@@ -7,7 +7,7 @@ type ResultWithItems<Type extends 'predictive' | 'regular', Items> = {
   type: Type;
   term: string;
   error?: string;
-  result: {total: number; items: Items};
+  result: {total: number; items: Items} | null;
 };
 
 export type RegularSearchReturn = ResultWithItems<
@@ -22,7 +22,9 @@ export type PredictiveSearchReturn = ResultWithItems<
 /**
  * Returns the empty state of a predictive search result to reset the search state.
  */
-export function getEmptyPredictiveSearchResult(): PredictiveSearchReturn['result'] {
+export function getEmptyPredictiveSearchResult(): NonNullable<
+  PredictiveSearchReturn['result']
+> {
   return {
     total: 0,
     items: {
@@ -68,7 +70,7 @@ export function urlWithTrackingParams({
 }: UrlWithTrackingParams) {
   let search = new URLSearchParams({
     ...extraParams,
-    q: encodeURIComponent(term),
+    q: term,
   }).toString();
 
   if (trackingParams) {

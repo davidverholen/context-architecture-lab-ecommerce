@@ -2,8 +2,20 @@ import {useLoaderData, Link} from 'react-router';
 import type {Route} from './+types/policies._index';
 import type {PoliciesQuery, PolicyItemFragment} from 'storefrontapi.generated';
 
+export const meta: Route.MetaFunction = () => {
+  return [
+    {title: 'Context Home | Policies'},
+    {
+      name: 'description',
+      content: 'Store policies exposed through the Context Home storefront.',
+    },
+  ];
+};
+
 export async function loader({context}: Route.LoaderArgs) {
-  const data: PoliciesQuery = await context.storefront.query(POLICIES_QUERY);
+  const data: PoliciesQuery = await context.storefront.query(POLICIES_QUERY, {
+    cache: context.storefront.CacheShort(),
+  });
 
   const shopPolicies = data.shop;
   const policies: PolicyItemFragment[] = [
@@ -25,8 +37,11 @@ export default function Policies() {
   const {policies} = useLoaderData<typeof loader>();
 
   return (
-    <div className="policies">
-      <h1>Policies</h1>
+    <div className="policies page-shell">
+      <section className="collection-hero">
+        <p className="eyebrow">Policies</p>
+        <h1>Store policies.</h1>
+      </section>
       <div>
         {policies.map((policy) => (
           <fieldset key={policy.id}>

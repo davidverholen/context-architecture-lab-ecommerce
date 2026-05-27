@@ -1,26 +1,12 @@
+import {
+  parseProductList,
+  productAttributeLabel,
+  productCountryLabel,
+  type ProductCardSource,
+  type ProductDetailSource,
+  type SelectedVariantSource,
+} from './productAttributes';
 import {PRODUCT_IMAGE_PLACEHOLDER} from './storefrontAssets';
-
-type MetafieldLike = {
-  value?: string | null;
-} | null | undefined;
-
-type ProductCardSource = {
-  material?: MetafieldLike;
-  style?: MetafieldLike;
-};
-
-type ProductDetailSource = ProductCardSource & {
-  originCountry?: MetafieldLike;
-  pileHeightMm?: MetafieldLike;
-  suitableRooms?: MetafieldLike;
-};
-
-type SelectedVariantSource = {
-  selectedOptions?: Array<{
-    name: string;
-    value: string;
-  }>;
-} | null | undefined;
 
 export type ProductDetail = {
   label: string;
@@ -83,35 +69,4 @@ export function productDetailView(
     details,
     fallbackImage: PRODUCT_IMAGE_PLACEHOLDER,
   };
-}
-
-export function productAttributeLabel(value: string | null | undefined) {
-  if (!value) return '';
-  return value
-    .split(/[_-]+/g)
-    .filter(Boolean)
-    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
-    .join(' ');
-}
-
-function productCountryLabel(value: string | null | undefined) {
-  if (!value) return '';
-  try {
-    return new Intl.DisplayNames(['en'], {type: 'region'}).of(value) ?? value;
-  } catch {
-    return value;
-  }
-}
-
-function parseProductList(value: string | null | undefined) {
-  if (!value) return [];
-  try {
-    const parsed = JSON.parse(value);
-    return Array.isArray(parsed) ? parsed.map(String) : [];
-  } catch {
-    return value
-      .split(',')
-      .map((part) => part.trim())
-      .filter(Boolean);
-  }
 }

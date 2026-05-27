@@ -8,6 +8,7 @@ import {
   type PredictiveSearchReturn,
   getEmptyPredictiveSearchResult,
 } from '~/lib/search';
+import {PRODUCT_DISPLAY_ATTRIBUTES_FRAGMENT} from '~/lib/productFragments';
 import type {
   RegularSearchQuery,
   PredictiveSearchQuery,
@@ -20,17 +21,34 @@ export const meta: Route.MetaFunction = () => {
 export async function loader({request, context}: Route.LoaderArgs) {
   const url = new URL(request.url);
   const isPredictive = url.searchParams.has('predictive');
+  const term = String(url.searchParams.get('q') || '');
   const searchPromise: Promise<PredictiveSearchReturn | RegularSearchReturn> =
     isPredictive
       ? predictiveSearch({request, context})
       : regularSearch({request, context});
 
-  searchPromise.catch((error: Error) => {
+  try {
+    return await searchPromise;
+  } catch (error) {
     console.error(error);
-    return {term: '', result: null, error: error.message};
-  });
+    const message = error instanceof Error ? error.message : 'Search failed';
 
-  return await searchPromise;
+    if (isPredictive) {
+      return {
+        type: 'predictive',
+        term,
+        result: getEmptyPredictiveSearchResult(),
+        error: message,
+      } satisfies PredictiveSearchReturn;
+    }
+
+    return {
+      type: 'regular',
+      term,
+      result: null,
+      error: message,
+    } satisfies RegularSearchReturn;
+  }
 }
 
 /**
@@ -84,6 +102,7 @@ export default function SearchPage() {
  * (adjust as needed)
  */
 const SEARCH_PRODUCT_FRAGMENT = `#graphql
+  ${PRODUCT_DISPLAY_ATTRIBUTES_FRAGMENT}
   fragment SearchProduct on Product {
     __typename
     handle
@@ -92,12 +111,7 @@ const SEARCH_PRODUCT_FRAGMENT = `#graphql
     title
     trackingParameters
     vendor
-    material: metafield(namespace: "details", key: "material") {
-      value
-    }
-    style: metafield(namespace: "details", key: "style") {
-      value
-    }
+    ...ProductDisplayAttributes
     selectedOrFirstAvailableVariant(
       selectedOptions: []
       ignoreUnknownOptions: true
@@ -397,7 +411,10 @@ async function predictiveSearch({
   const {storefront} = context;
   const url = new URL(request.url);
   const term = String(url.searchParams.get('q') || '').trim();
-  const limit = Number(url.searchParams.get('limit') || 10);
+  const requestedLimit = Number(url.searchParams.get('limit') || 10);
+  const limit = Number.isFinite(requestedLimit)
+    ? Math.min(Math.max(Math.trunc(requestedLimit), 1), 10)
+    : 10;
   const type = 'predictive';
 
   if (!term) return {type, term, result: getEmptyPredictiveSearchResult()};

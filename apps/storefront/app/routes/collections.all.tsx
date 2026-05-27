@@ -3,7 +3,8 @@ import {Link, useLoaderData} from 'react-router';
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {ProductItem} from '~/components/ProductItem';
-import type {CollectionItemFragment} from 'storefrontapi.generated';
+import type {ProductCardFragment} from 'storefrontapi.generated';
+import {PRODUCT_CARD_FRAGMENT} from '~/lib/productFragments';
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -27,7 +28,7 @@ async function loadCriticalData({context, request}: Route.LoaderArgs) {
   });
 
   const {products} = await storefront.query(CATALOG_QUERY, {
-    cache: storefront.CacheNone(),
+    cache: storefront.CacheShort(),
     variables: {...paginationVariables, query: 'tag:context-home-demo'},
   });
 
@@ -66,7 +67,7 @@ export default function Collection() {
         </div>
       </div>
 
-      <PaginatedResourceSection<CollectionItemFragment>
+      <PaginatedResourceSection<ProductCardFragment>
         connection={products}
         resourcesClassName="products-grid"
       >
@@ -81,39 +82,6 @@ export default function Collection() {
     </div>
   );
 }
-
-const COLLECTION_ITEM_FRAGMENT = `#graphql
-  fragment MoneyCollectionItem on MoneyV2 {
-    amount
-    currencyCode
-  }
-  fragment CollectionItem on Product {
-    id
-    handle
-    title
-    material: metafield(namespace: "details", key: "material") {
-      value
-    }
-    style: metafield(namespace: "details", key: "style") {
-      value
-    }
-    featuredImage {
-      id
-      altText
-      url
-      width
-      height
-    }
-    priceRange {
-      minVariantPrice {
-        ...MoneyCollectionItem
-      }
-      maxVariantPrice {
-        ...MoneyCollectionItem
-      }
-    }
-  }
-` as const;
 
 const CATALOG_QUERY = `#graphql
   query Catalog(
@@ -134,7 +102,7 @@ const CATALOG_QUERY = `#graphql
       sortKey: TITLE
     ) {
       nodes {
-        ...CollectionItem
+        ...ProductCard
       }
       pageInfo {
         hasPreviousPage
@@ -144,5 +112,5 @@ const CATALOG_QUERY = `#graphql
       }
     }
   }
-  ${COLLECTION_ITEM_FRAGMENT}
+  ${PRODUCT_CARD_FRAGMENT}
 ` as const;

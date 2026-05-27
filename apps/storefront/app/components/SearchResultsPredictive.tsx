@@ -8,7 +8,9 @@ import {
 } from '~/lib/search';
 import {useAside} from './Aside';
 
-type PredictiveSearchItems = PredictiveSearchReturn['result']['items'];
+type PredictiveSearchItems = NonNullable<
+  PredictiveSearchReturn['result']
+>['items'];
 
 type UsePredictiveSearchReturn = {
   term: React.MutableRefObject<string>;

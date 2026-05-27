@@ -8,7 +8,7 @@ type SelectedPolicies = keyof Pick<
 >;
 
 export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `Hydrogen | ${data?.policy.title ?? ''}`}];
+  return [{title: `Context Home | ${data?.policy.title ?? 'Policy'}`}];
 };
 
 export async function loader({params, context}: Route.LoaderArgs) {
@@ -22,6 +22,7 @@ export async function loader({params, context}: Route.LoaderArgs) {
   ) as SelectedPolicies;
 
   const data = await context.storefront.query(POLICY_CONTENT_QUERY, {
+    cache: context.storefront.CacheShort(),
     variables: {
       privacyPolicy: false,
       shippingPolicy: false,
@@ -45,14 +46,14 @@ export default function Policy() {
   const {policy} = useLoaderData<typeof loader>();
 
   return (
-    <div className="policy">
-      <br />
-      <br />
+    <div className="policy page-shell">
       <div>
         <Link to="/policies">← Back to Policies</Link>
       </div>
-      <br />
-      <h1>{policy.title}</h1>
+      <section className="collection-hero">
+        <p className="eyebrow">Policy</p>
+        <h1>{policy.title}</h1>
+      </section>
       <div dangerouslySetInnerHTML={{__html: policy.body}} />
     </div>
   );

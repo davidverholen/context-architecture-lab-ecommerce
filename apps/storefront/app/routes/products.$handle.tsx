@@ -14,7 +14,11 @@ import {ProductPrice} from '~/components/ProductPrice';
 import {ProductForm} from '~/components/ProductForm';
 import {ProductItem} from '~/components/ProductItem';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
-import {productDetailView} from '~/lib/productDomain';
+import {productDetailView} from '~/lib/productPresentation';
+import {
+  PRODUCT_CARD_FRAGMENT,
+  PRODUCT_DISPLAY_ATTRIBUTES_FRAGMENT,
+} from '~/lib/productFragments';
 import type {RelatedProductsQuery} from 'storefrontapi.generated';
 
 export const meta: Route.MetaFunction = ({data}) => {
@@ -47,12 +51,10 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
     throw new Error('Expected product handle to be defined');
   }
 
-  const [{product}] = await Promise.all([
-    storefront.query(PRODUCT_QUERY, {
-      cache: storefront.CacheNone(),
-      variables: {handle, selectedOptions: getSelectedProductOptions(request)},
-    }),
-  ]);
+  const {product} = await storefront.query(PRODUCT_QUERY, {
+    cache: storefront.CacheShort(),
+    variables: {handle, selectedOptions: getSelectedProductOptions(request)},
+  });
 
   if (!product?.id) {
     throw new Response(null, {status: 404});
@@ -69,7 +71,7 @@ function loadDeferredData({context, params}: Route.LoaderArgs) {
   const {storefront} = context;
   const relatedProducts = storefront
     .query(RELATED_PRODUCTS_QUERY, {
-      cache: storefront.CacheNone(),
+      cache: storefront.CacheShort(),
       variables: {
         first: 4,
         query: 'tag:context-home-demo',
@@ -268,6 +270,7 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
 ` as const;
 
 const PRODUCT_FRAGMENT = `#graphql
+  ${PRODUCT_DISPLAY_ATTRIBUTES_FRAGMENT}
   fragment Product on Product {
     id
     title
@@ -277,9 +280,7 @@ const PRODUCT_FRAGMENT = `#graphql
     description
     encodedVariantExistence
     encodedVariantAvailability
-    material: metafield(namespace: "details", key: "material") {
-      value
-    }
+    ...ProductDisplayAttributes
     shape: metafield(namespace: "details", key: "shape") {
       value
     }
@@ -290,9 +291,6 @@ const PRODUCT_FRAGMENT = `#graphql
       value
     }
     originCountry: metafield(namespace: "details", key: "origin_country") {
-      value
-    }
-    style: metafield(namespace: "details", key: "style") {
       value
     }
     images(first: 8) {
@@ -349,39 +347,6 @@ const PRODUCT_QUERY = `#graphql
   ${PRODUCT_FRAGMENT}
 ` as const;
 
-const RELATED_PRODUCT_FRAGMENT = `#graphql
-  fragment MoneyRelatedProduct on MoneyV2 {
-    amount
-    currencyCode
-  }
-  fragment RelatedProduct on Product {
-    id
-    title
-    handle
-    material: metafield(namespace: "details", key: "material") {
-      value
-    }
-    style: metafield(namespace: "details", key: "style") {
-      value
-    }
-    featuredImage {
-      id
-      url
-      altText
-      width
-      height
-    }
-    priceRange {
-      minVariantPrice {
-        ...MoneyRelatedProduct
-      }
-      maxVariantPrice {
-        ...MoneyRelatedProduct
-      }
-    }
-  }
-` as const;
-
 const RELATED_PRODUCTS_QUERY = `#graphql
   query RelatedProducts(
     $country: CountryCode
@@ -396,9 +361,9 @@ const RELATED_PRODUCTS_QUERY = `#graphql
       reverse: true
     ) {
       nodes {
-        ...RelatedProduct
+        ...ProductCard
       }
     }
   }
-  ${RELATED_PRODUCT_FRAGMENT}
+  ${PRODUCT_CARD_FRAGMENT}
 ` as const;

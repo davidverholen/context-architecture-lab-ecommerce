@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200">
+  <rect width="1200" height="1200" fill="#f2eee6"/>
+  <rect x="215" y="160" width="770" height="880" rx="18" fill="#d8d0c1"/>
+  <rect x="265" y="220" width="670" height="760" rx="14" fill="#eee7dc"/>
+  <path d="M340 315c88 58 177 58 265 0s177-58 265 0" fill="none" stroke="#9a8f7d" stroke-width="32" stroke-linecap="round"/>
+  <path d="M340 505c88 58 177 58 265 0s177-58 265 0" fill="none" stroke="#68796c" stroke-width="32" stroke-linecap="round"/>
+  <path d="M340 695c88 58 177 58 265 0s177-58 265 0" fill="none" stroke="#b86f4f" stroke-width="32" stroke-linecap="round"/>
+  <path d="M340 885c88 58 177 58 265 0s177-58 265 0" fill="none" stroke="#9a8f7d" stroke-width="32" stroke-linecap="round"/>
+  <g stroke="#c5baaa" stroke-linecap="round" stroke-width="16">
+    <path d="M270 128v62"/>
+    <path d="M340 128v62"/>
+    <path d="M410 128v62"/>
+    <path d="M480 128v62"/>
+    <path d="M550 128v62"/>
+    <path d="M620 128v62"/>
+    <path d="M690 128v62"/>
+    <path d="M760 128v62"/>
+    <path d="M830 128v62"/>
+    <path d="M900 128v62"/>
+    <path d="M270 1010v62"/>
+    <path d="M340 1010v62"/>
+    <path d="M410 1010v62"/>
+    <path d="M480 1010v62"/>
+    <path d="M550 1010v62"/>
+    <path d="M620 1010v62"/>
+    <path d="M690 1010v62"/>
+    <path d="M760 1010v62"/>
+    <path d="M830 1010v62"/>
+    <path d="M900 1010v62"/>
+  </g>
+</svg>

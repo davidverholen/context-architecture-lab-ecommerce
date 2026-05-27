@@ -118,6 +118,32 @@ function stringArrayValue(resource: NonNullable<AkeneoWebhookProductResource>, c
   return [];
 }
 
+function optionalStringValue(
+  resource: NonNullable<AkeneoWebhookProductResource>,
+  code: string
+): string | undefined {
+  const value = stringValue(resource, code);
+  return value.trim() === "" ? undefined : value;
+}
+
+function optionalNumberValue(
+  resource: NonNullable<AkeneoWebhookProductResource>,
+  code: string
+): number | undefined {
+  const value = pickValue(resource, code);
+
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : undefined;
+  }
+
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  }
+
+  return undefined;
+}
+
 function hasRequiredValues(resource: NonNullable<AkeneoWebhookProductResource>): boolean {
   return REQUIRED_RUG_ATTRIBUTES.every((code) => {
     const value = pickValue(resource, code);
@@ -182,6 +208,8 @@ export function normalizeAkeneoWebhookToExports(
       const productFamily = resource.family ?? "rug";
       const upsertEventType = eventType;
       const complete = resource.enabled !== false && productFamily === "rug" && hasRequiredValues(resource);
+      const primaryImage = optionalStringValue(resource, "primary_image");
+      const lifestyleImage = optionalStringValue(resource, "lifestyle_image");
       const exportPayload = {
         export_id: event.event_id ?? `akeneo-event-${resource.identifier}-${now}`,
         source: "akeneo-ce",
@@ -197,6 +225,15 @@ export function normalizeAkeneoWebhookToExports(
             ratio: complete ? 100 : 0
           },
           values: {
+            ...(optionalStringValue(resource, "merchandising_name")
+              ? { merchandising_name: optionalStringValue(resource, "merchandising_name") }
+              : {}),
+            ...(optionalStringValue(resource, "description")
+              ? { description: optionalStringValue(resource, "description") }
+              : {}),
+            ...(optionalNumberValue(resource, "price") !== undefined
+              ? { price: optionalNumberValue(resource, "price") }
+              : {}),
             material: displayStringValue(resource, "material"),
             size: displayStringValue(resource, "size"),
             color: displayStringValue(resource, "color"),
@@ -205,7 +242,15 @@ export function normalizeAkeneoWebhookToExports(
             care_instruction: stringValue(resource, "care_instruction"),
             suitable_rooms: stringArrayValue(resource, "suitable_rooms"),
             style: displayStringValue(resource, "style"),
-            origin_country: stringValue(resource, "origin_country").toUpperCase()
+            origin_country: stringValue(resource, "origin_country").toUpperCase(),
+            ...(primaryImage
+              ? {
+                image_assets: {
+                  primary: primaryImage,
+                  ...(lifestyleImage ? { lifestyle: lifestyleImage } : {})
+                }
+              }
+              : {})
           }
         }
       } satisfies AkeneoProductExport;

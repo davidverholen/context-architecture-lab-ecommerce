@@ -1,58 +1,71 @@
 import type {Route} from './+types/collections.all';
-import {useLoaderData} from 'react-router';
-import {getPaginationVariables, Image, Money} from '@shopify/hydrogen';
+import {Link, useLoaderData} from 'react-router';
+import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {ProductItem} from '~/components/ProductItem';
 import type {CollectionItemFragment} from 'storefrontapi.generated';
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: `Hydrogen | Products`}];
+  return [
+    {title: 'Context Home | Rugs'},
+    {
+      name: 'description',
+      content: 'Browse the Context Home demo rug catalog.',
+    },
+  ];
 };
 
 export async function loader(args: Route.LoaderArgs) {
-  // Start fetching non-critical data without blocking time to first byte
-  const deferredData = loadDeferredData(args);
-
-  // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
-
-  return {...deferredData, ...criticalData};
+  return criticalData;
 }
 
-/**
- * Load data necessary for rendering content above the fold. This is the critical data
- * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
- */
 async function loadCriticalData({context, request}: Route.LoaderArgs) {
   const {storefront} = context;
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 8,
+    pageBy: 12,
   });
 
-  const [{products}] = await Promise.all([
-    storefront.query(CATALOG_QUERY, {
-      variables: {...paginationVariables},
-    }),
-    // Add other queries here, so that they are loaded in parallel
-  ]);
-  return {products};
-}
+  const {products} = await storefront.query(CATALOG_QUERY, {
+    cache: storefront.CacheNone(),
+    variables: {...paginationVariables, query: 'tag:context-home-demo'},
+  });
 
-/**
- * Load data for rendering content below the fold. This data is deferred and will be
- * fetched after the initial page load. If it's unavailable, the page should still 200.
- * Make sure to not throw any errors here, as it will cause the page to 500.
- */
-function loadDeferredData({context}: Route.LoaderArgs) {
-  return {};
+  return {products};
 }
 
 export default function Collection() {
   const {products} = useLoaderData<typeof loader>();
 
   return (
-    <div className="collection">
-      <h1>Products</h1>
+    <div className="collection page-shell">
+      <section className="collection-hero">
+        <p className="eyebrow">All rugs</p>
+        <h1>Quiet pieces for real rooms.</h1>
+        <p>
+          Browse four demo rugs backed by Shopify product data, media,
+          inventory, and public metafields.
+        </p>
+        <form className="collection-search" action="/search" method="get">
+          <input
+            aria-label="Search rugs"
+            name="q"
+            placeholder="Search wool, jute, terracotta..."
+            type="search"
+          />
+          <button type="submit">Search</button>
+        </form>
+      </section>
+
+      <div className="listing-toolbar">
+        <span>{products.nodes.length} rugs</span>
+        <div>
+          <Link to="/search?q=wool">Wool</Link>
+          <Link to="/search?q=jute">Jute</Link>
+          <Link to="/search?q=cotton">Cotton</Link>
+        </div>
+      </div>
+
       <PaginatedResourceSection<CollectionItemFragment>
         connection={products}
         resourcesClassName="products-grid"
@@ -78,6 +91,12 @@ const COLLECTION_ITEM_FRAGMENT = `#graphql
     id
     handle
     title
+    material: metafield(namespace: "details", key: "material") {
+      value
+    }
+    style: metafield(namespace: "details", key: "style") {
+      value
+    }
     featuredImage {
       id
       altText
@@ -96,7 +115,6 @@ const COLLECTION_ITEM_FRAGMENT = `#graphql
   }
 ` as const;
 
-// NOTE: https://shopify.dev/docs/api/storefront/latest/objects/product
 const CATALOG_QUERY = `#graphql
   query Catalog(
     $country: CountryCode
@@ -105,8 +123,16 @@ const CATALOG_QUERY = `#graphql
     $last: Int
     $startCursor: String
     $endCursor: String
+    $query: String
   ) @inContext(country: $country, language: $language) {
-    products(first: $first, last: $last, before: $startCursor, after: $endCursor) {
+    products(
+      first: $first
+      last: $last
+      before: $startCursor
+      after: $endCursor
+      query: $query
+      sortKey: TITLE
+    ) {
       nodes {
         ...CollectionItem
       }

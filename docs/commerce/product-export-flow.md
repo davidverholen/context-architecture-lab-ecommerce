@@ -59,6 +59,8 @@ The product projection service owns:
 - Audit event shape.
 - Projection failure classification.
 
+The Context Home demo catalog is represented as Akeneo export data in [akeneo-context-home-catalog.json](../../examples/products/akeneo-context-home-catalog.json). The local Shopify storefront sync command can use that export data as the offline source, or read the same seeded identifiers from local Akeneo REST with `SHOPIFY_DEMO_AKENEO_SOURCE=api`. It projects the Akeneo product data through the product mapping and then performs explicit dev-shop media, inventory, and publication operations needed for the customer-facing Hydrogen demo.
+
 The Akeneo event bridge owns:
 
 - Receiving Akeneo webhook envelopes.

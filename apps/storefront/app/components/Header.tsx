@@ -21,20 +21,31 @@ export function Header({
   cart,
   publicStoreDomain,
 }: HeaderProps) {
-  const {shop, menu} = header;
+  const {menu} = header;
   return (
-    <header className="header">
-      <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
-      </NavLink>
-      <HeaderMenu
-        menu={menu}
-        viewport="desktop"
-        primaryDomainUrl={header.shop.primaryDomain.url}
-        publicStoreDomain={publicStoreDomain}
-      />
-      <HeaderCtas cart={cart} />
-    </header>
+    <>
+      <div className="service-bar" role="note">
+        <span>Free returns on demo rugs</span>
+        <span>Designed for governed commerce data</span>
+        <span>Local Hydrogen storefront</span>
+      </div>
+      <header className="header">
+        <NavLink className="brand-lockup" prefetch="intent" to="/" end>
+          <span className="brand-mark" aria-hidden="true" />
+          <span>
+            <strong>Context Home</strong>
+            <small>Rugs for considered rooms</small>
+          </span>
+        </NavLink>
+        <HeaderMenu
+          menu={menu}
+          viewport="desktop"
+          primaryDomainUrl={header.shop.primaryDomain.url}
+          publicStoreDomain={publicStoreDomain}
+        />
+        <HeaderCtas cart={cart} />
+      </header>
+    </>
   );
 }
 
@@ -59,8 +70,7 @@ export function HeaderMenu({
           end
           onClick={close}
           prefetch="intent"
-          style={activeLinkStyle}
-          to="/"
+            to="/"
         >
           Home
         </NavLink>
@@ -82,7 +92,6 @@ export function HeaderMenu({
             key={item.id}
             onClick={close}
             prefetch="intent"
-            style={activeLinkStyle}
             to={url}
           >
             {item.title}
@@ -108,9 +117,10 @@ function HeaderMenuMobileToggle() {
   return (
     <button
       className="header-menu-mobile-toggle reset"
+      aria-label="Open menu"
       onClick={() => open('mobile')}
     >
-      <h3>☰</h3>
+      <span aria-hidden="true">Menu</span>
     </button>
   );
 }
@@ -118,7 +128,7 @@ function HeaderMenuMobileToggle() {
 function SearchToggle() {
   const {open} = useAside();
   return (
-    <button className="reset" onClick={() => open('search')}>
+    <button className="reset header-action" onClick={() => open('search')}>
       Search
     </button>
   );
@@ -130,6 +140,7 @@ function CartBadge({count}: {count: number | null}) {
 
   return (
     <a
+      className="header-action"
       href="/cart"
       onClick={(e) => {
         e.preventDefault();
@@ -170,27 +181,27 @@ const FALLBACK_HEADER_MENU = {
       id: 'gid://shopify/MenuItem/461609500728',
       resourceId: null,
       tags: [],
-      title: 'Collections',
+      title: 'Rugs',
       type: 'HTTP',
-      url: '/collections',
+      url: '/collections/all',
       items: [],
     },
     {
       id: 'gid://shopify/MenuItem/461609533496',
       resourceId: null,
       tags: [],
-      title: 'Blog',
+      title: 'Wool',
       type: 'HTTP',
-      url: '/blogs/journal',
+      url: '/search?q=wool',
       items: [],
     },
     {
       id: 'gid://shopify/MenuItem/461609566264',
       resourceId: null,
       tags: [],
-      title: 'Policies',
+      title: 'Jute',
       type: 'HTTP',
-      url: '/policies',
+      url: '/search?q=jute',
       items: [],
     },
     {
@@ -204,16 +215,3 @@ const FALLBACK_HEADER_MENU = {
     },
   ],
 };
-
-function activeLinkStyle({
-  isActive,
-  isPending,
-}: {
-  isActive: boolean;
-  isPending: boolean;
-}) {
-  return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'black',
-  };
-}

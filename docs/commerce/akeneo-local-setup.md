@@ -87,11 +87,11 @@ The current local flow accepts Akeneo webhook payloads at `akeneo-event-bridge`,
 
 ## Seed Data
 
-The local seed script models the existing rug sample:
+The local seed script models the Context Home demo catalog in [akeneo-context-home-catalog.json](../../examples/products/akeneo-context-home-catalog.json):
 
 - Family: `rug`
-- Identifier/SKU: `RUG-ATLAS-170X240-SAND`
-- Attributes: material, size, color, shape, pile height, care instruction, suitable rooms, style, origin country
+- Identifiers/SKUs: four demo rug products for Atlas, Sora, Mira, and Rune
+- Attributes: merchandising name, description, price, material, size, color, shape, pile height, care instruction, suitable rooms, style, origin country, and demo image asset filenames
 - Completeness: ready for ecommerce projection
 
 Run it directly with:
@@ -100,7 +100,11 @@ Run it directly with:
 npm run akeneo:seed-rug
 ```
 
-The seed should produce an event that normalizes toward [akeneo-rug-export.sample.json](../../examples/products/akeneo-rug-export.sample.json).
+Set `AKENEO_RUG_SKU` to seed only one product. The seed should produce events that normalize toward [akeneo-rug-export.sample.json](../../examples/products/akeneo-rug-export.sample.json). The four-product demo storefront sync can either read the checked-in catalog export file or pull the seeded products from local Akeneo REST with:
+
+```sh
+SHOPIFY_DEMO_AKENEO_SOURCE=api npm run shopify:sync-akeneo-demo-catalog
+```
 
 ## Non-Goals
 

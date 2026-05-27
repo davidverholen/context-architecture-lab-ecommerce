@@ -143,6 +143,15 @@ npm run shopify:project-sample
 
 The command reads private `.env` values first and can fall back to ignored `.env.agent` store/auth settings for local CLI mode.
 
+For the Context Home storefront demo, use the Akeneo-shaped catalog sync:
+
+```sh
+SHOPIFY_DEMO_DRY_RUN=true npm run shopify:sync-akeneo-demo-catalog
+npm run shopify:sync-akeneo-demo-catalog
+```
+
+This command reads [akeneo-context-home-catalog.json](../../examples/products/akeneo-context-home-catalog.json), projects each product through the same product projection mapping, then performs the storefront-specific dev-shop operator steps that the generic runtime adapter does not own yet: generated image upload, demo inventory setup, and publication to Hydrogen/Storefront and Online Store publications. When local Akeneo is running and seeded, `SHOPIFY_DEMO_AKENEO_SOURCE=api` switches the source to Akeneo REST for the same identifiers. It remains an explicit local operator action and must keep Shopify credentials outside the repository.
+
 For an explicitly approved dev-shop storefront smoke test, use:
 
 ```sh

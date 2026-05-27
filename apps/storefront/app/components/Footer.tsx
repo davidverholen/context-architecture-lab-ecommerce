@@ -18,6 +18,20 @@ export function Footer({
       <Await resolve={footerPromise}>
         {(footer) => (
           <footer className="footer">
+            <div className="footer-inner">
+              <div>
+                <strong>Context Home</strong>
+                <p>
+                  A governed-commerce storefront demo for clean rug shopping
+                  experiences.
+                </p>
+              </div>
+              <div className="footer-service-grid">
+                <span>Storefront API reads</span>
+                <span>Cart line updates</span>
+                <span>Projected product attributes</span>
+              </div>
+            </div>
             {footer?.menu && header.shop.primaryDomain?.url && (
               <FooterMenu
                 menu={footer.menu}

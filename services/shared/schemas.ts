@@ -113,6 +113,9 @@ export const pimProductSchema = z.object({
   sku: z.string(),
   status: z.enum(["draft", "enriched", "approved"]),
   attributes: z.object({
+    merchandising_name: z.string().optional(),
+    description: z.string().optional(),
+    price: z.number().nonnegative().optional(),
     material: z.string(),
     size: z.string(),
     color: z.string(),
@@ -121,11 +124,18 @@ export const pimProductSchema = z.object({
     care_instruction: z.string(),
     suitable_rooms: z.array(z.string()).min(1),
     style: z.string(),
-    origin_country: z.string().length(2)
+    origin_country: z.string().length(2),
+    image_assets: z.object({
+      primary: z.string(),
+      lifestyle: z.string().optional()
+    }).optional()
   })
 });
 
 const akeneoProductValuesSchema = z.object({
+  merchandising_name: z.string().optional(),
+  description: z.string().optional(),
+  price: z.number().nonnegative().optional(),
   material: z.string(),
   size: z.string(),
   color: z.string(),
@@ -134,7 +144,11 @@ const akeneoProductValuesSchema = z.object({
   care_instruction: z.string(),
   suitable_rooms: z.array(z.string()).min(1),
   style: z.string(),
-  origin_country: z.string().length(2)
+  origin_country: z.string().length(2),
+  image_assets: z.object({
+    primary: z.string(),
+    lifestyle: z.string().optional()
+  }).optional()
 });
 
 const akeneoProductIdentitySchema = z.object({
@@ -234,6 +248,11 @@ const shopifyProjectionSchema = z.object({
       color: z.string()
     })
   })).min(1),
+  media: z.array(z.object({
+    role: z.enum(["primary", "lifestyle"]),
+    filename: z.string(),
+    alt: z.string().optional()
+  })).optional(),
   metafields: z.array(z.object({
     namespace: z.string(),
     key: z.string(),

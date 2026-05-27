@@ -1,6 +1,7 @@
 import {Link} from 'react-router';
 import {Image, Money, Pagination} from '@shopify/hydrogen';
 import {urlWithTrackingParams, type RegularSearchReturn} from '~/lib/search';
+import {productCardView} from '~/lib/productDomain';
 
 type SearchItems = RegularSearchReturn['result']['items'];
 type PartialSearchResult<ItemType extends keyof SearchItems> = Pick<
@@ -103,7 +104,10 @@ function SearchResultsProducts({
 
   return (
     <div className="search-result">
-      <h2>Products</h2>
+      <div className="section-heading compact">
+        <p className="eyebrow">Products</p>
+        <h2>Rugs matching your search</h2>
+      </div>
       <Pagination connection={products}>
         {({nodes, isLoading, NextLink, PreviousLink}) => {
           const ItemsMarkup = nodes.map((product) => {
@@ -115,36 +119,57 @@ function SearchResultsProducts({
 
             const price = product?.selectedOrFirstAvailableVariant?.price;
             const image = product?.selectedOrFirstAvailableVariant?.image;
+            const view = productCardView(product);
 
             return (
-              <div className="search-results-item" key={product.id}>
-                <Link prefetch="intent" to={productUrl}>
+              <Link
+                className="search-product-card"
+                key={product.id}
+                prefetch="intent"
+                to={productUrl}
+              >
+                <span className="product-item-media">
                   {image && (
-                    <Image data={image} alt={product.title} width={50} />
+                    <Image
+                      alt={product.title}
+                      data={image}
+                      sizes="(min-width: 45em) 25vw, 50vw"
+                    />
                   )}
-                  <div>
-                    <p>{product.title}</p>
-                    <small>{price && <Money data={price} />}</small>
-                  </div>
-                </Link>
-              </div>
+                  {!image ? (
+                    <img alt="" aria-hidden="true" src={view.fallbackImage} />
+                  ) : null}
+                </span>
+                <span className="product-item-info">
+                  <span>
+                    <span className="product-item-title">{product.title}</span>
+                    {view.metaLabel ? (
+                      <span className="product-item-meta">
+                        {view.metaLabel}
+                      </span>
+                    ) : null}
+                  </span>
+                  <span className="product-item-price">
+                    {price && <Money data={price} />}
+                  </span>
+                </span>
+              </Link>
             );
           });
 
           return (
             <div>
-              <div>
+              <div className="pagination-link">
                 <PreviousLink>
-                  {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
+                  {isLoading ? 'Loading...' : <span>Load previous</span>}
                 </PreviousLink>
               </div>
-              <div>
+              <div className="search-products-grid">
                 {ItemsMarkup}
-                <br />
               </div>
-              <div>
+              <div className="pagination-link">
                 <NextLink>
-                  {isLoading ? 'Loading...' : <span>Load more ↓</span>}
+                  {isLoading ? 'Loading...' : <span>Load more</span>}
                 </NextLink>
               </div>
             </div>
@@ -157,5 +182,10 @@ function SearchResultsProducts({
 }
 
 function SearchResultsEmpty() {
-  return <p>No results, try a different search.</p>;
+  return (
+    <div className="empty-state">
+      <h2>Start with a material or room.</h2>
+      <p>Try wool, jute, cotton, bedroom, living room, or terracotta.</p>
+    </div>
+  );
 }

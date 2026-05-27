@@ -5,6 +5,7 @@ import type {
   CollectionItemFragment,
   RecommendedProductFragment,
 } from 'storefrontapi.generated';
+import {productCardView} from '~/lib/productDomain';
 import {useVariantUrl} from '~/lib/variants';
 
 export function ProductItem({
@@ -19,6 +20,8 @@ export function ProductItem({
 }) {
   const variantUrl = useVariantUrl(product.handle);
   const image = product.featuredImage;
+  const view = productCardView(product);
+
   return (
     <Link
       className="product-item"
@@ -26,19 +29,37 @@ export function ProductItem({
       prefetch="intent"
       to={variantUrl}
     >
-      {image && (
-        <Image
-          alt={image.altText || product.title}
-          aspectRatio="1/1"
-          data={image}
-          loading={loading}
-          sizes="(min-width: 45em) 400px, 100vw"
-        />
-      )}
-      <h4>{product.title}</h4>
-      <small>
-        <Money data={product.priceRange.minVariantPrice} />
-      </small>
+      <span className="product-item-media">
+        {image ? (
+          <Image
+            alt={image.altText || product.title}
+            aspectRatio="1/1"
+            data={image}
+            loading={loading}
+            sizes="(min-width: 60em) 25vw, (min-width: 45em) 33vw, 50vw"
+          />
+        ) : (
+          <img
+            alt=""
+            aria-hidden="true"
+            loading={loading ?? 'lazy'}
+            src={view.fallbackImage}
+          />
+        )}
+      </span>
+      <span className="product-item-info">
+        <span>
+          <span className="product-item-title">{product.title}</span>
+          {view.metaLabel ? (
+            <span className="product-item-meta">
+              {view.metaLabel}
+            </span>
+          ) : null}
+        </span>
+        <span className="product-item-price">
+          <Money data={product.priceRange.minVariantPrice} />
+        </span>
+      </span>
     </Link>
   );
 }

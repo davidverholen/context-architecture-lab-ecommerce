@@ -32,7 +32,7 @@ describe("Shopify Admin target", () => {
       handle: "atlas-wool-rug-sand",
       vendor: "Context Home",
       productType: "Rug",
-      status: "DRAFT"
+      status: "ACTIVE"
     });
     expect(variables.input.productOptions).toHaveLength(2);
     expect(variables.input.variants[0]).toMatchObject({
@@ -132,7 +132,7 @@ describe("Shopify Admin target", () => {
                 id: "gid://shopify/Product/123",
                 handle: "atlas-wool-rug-sand",
                 title: "Atlas Wool Rug",
-                status: "DRAFT"
+                status: "ACTIVE"
               },
               userErrors: []
             }
@@ -172,7 +172,7 @@ describe("Shopify Admin target", () => {
               id: "gid://shopify/Product/456",
               handle: "atlas-wool-rug-sand",
               title: "Atlas Wool Rug",
-              status: "DRAFT"
+              status: "ACTIVE"
             },
             userErrors: []
           }

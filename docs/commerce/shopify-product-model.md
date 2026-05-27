@@ -4,6 +4,7 @@ At a stable conceptual level, Shopify product modeling includes:
 
 - Native product fields for core commerce presentation such as title, handle, vendor, product type, description, status, and images.
 - Variants for purchasable differences such as size or color when those differences affect the item a customer buys.
+- Variant price for the approved ecommerce sellable item price.
 - Metafields for simple structured product attributes that extend native fields.
 - Metaobjects for reusable structured concepts that should be modeled consistently across products.
 - Admin API for administrative product operations.
@@ -26,6 +27,7 @@ Use native fields first when the projected concept is core commerce presentation
 - Description.
 - Status and publication intent.
 - Images when governed media exists.
+- Variant price.
 
 Use variants only for purchasable rug differences. Size and color are candidate variant options because they can represent distinct sellable rug SKUs. Attributes such as material, shape, pile height, care instruction, suitable rooms, style, and origin country are descriptive unless the business explicitly makes them purchasable choices.
 

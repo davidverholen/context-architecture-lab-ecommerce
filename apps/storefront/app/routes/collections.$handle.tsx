@@ -105,6 +105,12 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
     id
     handle
     title
+    material: metafield(namespace: "details", key: "material") {
+      value
+    }
+    style: metafield(namespace: "details", key: "style") {
+      value
+    }
     featuredImage {
       id
       altText

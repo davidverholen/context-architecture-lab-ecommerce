@@ -25,6 +25,10 @@ const pairs = [
   ["schemas/governance-decision.schema.json", "examples/changes/governance-decision.sample.json"]
 ];
 
+const arrayPairs = [
+  ["schemas/akeneo-product-export.schema.json", "examples/products/akeneo-context-home-catalog.json"]
+];
+
 const ajv = new Ajv({ allErrors: true, strict: false });
 
 async function readJson(relativePath) {
@@ -87,6 +91,31 @@ for (const [schemaPath, samplePath] of pairs) {
   console.error(`FAIL ${samplePath}`);
   for (const error of validate.errors ?? []) {
     console.error(`  ${error.instancePath || "/"} ${error.message}`);
+  }
+}
+
+for (const [schemaPath, samplePath] of arrayPairs) {
+  if (!validators.has(schemaPath)) {
+    const schema = await readJson(schemaPath);
+    validators.set(schemaPath, ajv.compile(schema));
+  }
+
+  const samples = await readJson(samplePath);
+  const validate = validators.get(schemaPath);
+
+  for (const [index, sample] of samples.entries()) {
+    const valid = validate(sample);
+
+    if (valid) {
+      console.log(`PASS ${samplePath}[${index}]`);
+      continue;
+    }
+
+    failed = true;
+    console.error(`FAIL ${samplePath}[${index}]`);
+    for (const error of validate.errors ?? []) {
+      console.error(`  ${error.instancePath || "/"} ${error.message}`);
+    }
   }
 }
 

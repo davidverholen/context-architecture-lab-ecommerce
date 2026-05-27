@@ -54,6 +54,7 @@ Current scaffold scope:
 
 - Product, collection, page, blog, policy, search, robots, sitemap, and cart routes from the Hydrogen scaffold.
 - Product detail add-to-cart behavior and cart line add/update/remove behavior.
+- A demo rug-shop presentation branded as Context Home, backed by generated demo images and Shopify Storefront API product reads.
 - No checkout redirect route.
 - No Customer Account API routes or customer profile/order/address mutations.
 - No Shopify Admin API calls from Hydrogen.
@@ -70,6 +71,24 @@ Build locally:
 npm run storefront:build
 ```
 
+Check Hydrogen starter agent rules copied from the Shopify CLI scaffold:
+
+```sh
+npm run storefront:check-agent-rules
+npm run storefront:sync-agent-rules
+```
+
+The tracked rules live under `apps/storefront/.cursor/rules/`. They are Cursor-compatible advisory hints that this repository also asks agents to read when working under `apps/storefront`. The check script compares those tracked rules with the installed Shopify CLI Hydrogen starter template and reports newly added or changed upstream rules. The sync script copies missing upstream rules only; changed local rules still require review unless the operator explicitly uses the script's `--force` option.
+
+Sync the optional live Shopify development shop with the Context Home demo catalog:
+
+```sh
+SHOPIFY_DEMO_DRY_RUN=true npm run shopify:sync-akeneo-demo-catalog
+npm run shopify:sync-akeneo-demo-catalog
+```
+
+The sync command is an explicit local operator action. By default it reads [Akeneo export data](../../examples/products/akeneo-context-home-catalog.json); with `SHOPIFY_DEMO_AKENEO_SOURCE=api`, it reads the same demo identifiers from a running local Akeneo REST API. It then passes each product through the repository product projection mapping, uses the existing private `.env` / `.env.agent` Shopify Admin auth pattern, creates or updates four demo rug products, uploads generated demo media, sets inventory, publishes the products to every Shopify publication matched by the configured publication pattern, and exposes simple `details.*` product metafields to the Storefront API. It keeps Admin API writes outside Hydrogen; the storefront continues to read through Storefront API patterns.
+
 ## Environment And Secrets
 
 Hydrogen storefront environment variables must stay in private environment configuration. Do not commit real storefront tokens, customer account values, Oxygen deployment secrets, screenshots with tokens, or generated Shopify CLI environment files.
@@ -83,6 +102,8 @@ Connecting to the real Shopify shop requires a Storefront API token or a linked 
 For this project, the preferred path is to create or link a storefront through Shopify's Headless/Hydrogen channel, copy or pull the Storefront API environment values into the ignored `apps/storefront/.env`, and then publish approved products to the appropriate storefront sales channel. The local operator command `npm run shopify:publish-sample` can also write a generated Storefront token to `apps/storefront/.env` when run with `SHOPIFY_CREATE_STOREFRONT_TOKEN=true` after the required unauthenticated scopes are granted. Until then, the scaffold can run against Mock.shop.
 
 The Shopify Hydrogen sales channel must be installed on the target shop before `shopify hydrogen link` can connect the local app to a real Hydrogen storefront. If the sales channel is not installed, local Hydrogen will continue to fall back to Mock.shop unless `apps/storefront/.env` is populated through another approved Storefront API token path.
+
+The Context Home demo catalog uses generated local images under `apps/storefront/public/demo-catalog/` as upload sources for Shopify media and keeps one generic product placeholder for missing Storefront media. Product names, prices, descriptions, attributes, and product-specific media come from Akeneo-shaped export data or Akeneo REST products projected into Shopify, not from static Hydrogen product data. Real storefront tokens, generated Shopify CLI environment files, and shop credentials remain ignored and must not be committed.
 
 ## Review Gates
 

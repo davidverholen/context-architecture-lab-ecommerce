@@ -129,29 +129,48 @@ export function transformProjectionJobToShopifyProjection(
   const identity = rugIdentityFromSku(product.sku);
   const material = attributes.material.toLowerCase();
   const color = attributes.color.toLowerCase();
-  const title = `${identity.collectionName} ${titleCase(material)} Rug`;
-  const handle = slugify(`${identity.collectionName} ${material} rug ${color}`);
+  const title = attributes.merchandising_name ?? `${identity.collectionName} ${titleCase(material)} Rug`;
+  const handle = slugify(`${title} ${color}`);
   const careHandle = slugify(attributes.care_instruction.slice(0, 42)) || "care-profile";
+  const media = attributes.image_assets
+    ? [
+      {
+        role: "primary" as const,
+        filename: attributes.image_assets.primary,
+        alt: `${title} in ${titleCase(color)}`
+      },
+      ...(attributes.image_assets.lifestyle
+        ? [
+          {
+            role: "lifestyle" as const,
+            filename: attributes.image_assets.lifestyle,
+            alt: `${title} styled in a room`
+          }
+        ]
+        : [])
+    ]
+    : undefined;
 
   return {
     projection_id: projectionIdFromPimProductId(product.pim_product_id),
     pim_product_id: product.pim_product_id,
-    shopify_status: "draft",
+    shopify_status: product.status === "approved" ? "active" : "draft",
     title,
     handle,
     vendor: "Context Home",
     product_type: "Rug",
-    description: `A ${material} rug projected from governed PIM product data.`,
+    description: attributes.description ?? `A ${material} rug projected from governed PIM product data.`,
     variants: [
       {
         sku: product.sku,
-        price: 349,
+        price: attributes.price ?? 349,
         option_values: {
           size: attributes.size,
           color: attributes.color
         }
       }
     ],
+    ...(media ? { media } : {}),
     metafields: [
       {
         namespace: "details",
@@ -182,6 +201,12 @@ export function transformProjectionJobToShopifyProjection(
         key: "origin_country",
         type: "single_line_text_field",
         value: attributes.origin_country
+      },
+      {
+        namespace: "details",
+        key: "style",
+        type: "single_line_text_field",
+        value: attributes.style
       }
     ],
     metaobjects: [

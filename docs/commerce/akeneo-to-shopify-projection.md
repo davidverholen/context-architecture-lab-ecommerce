@@ -29,6 +29,7 @@ Native Shopify fields are preferred for core commerce presentation:
 - Vendor or brand from configured commerce brand source.
 - Product type or category decision from rug family.
 - Description from approved customer-facing copy.
+- Price from governed ecommerce price data for the sellable variant.
 - Status from PIM enrichment and approval state.
 
 Variants are reserved for purchasable differences. For rugs, size and color may be variant options when they identify distinct sellable items. Non-purchasable descriptive attributes such as material, shape, pile height, suitable rooms, style, and origin should not create variants by default.
@@ -41,6 +42,8 @@ Metafields carry simple structured attributes:
 - `style`.
 - `origin_country`.
 - `suitable_rooms` while room types are simple list values.
+
+The Context Home demo catalog uses [akeneo-context-home-catalog.json](../../examples/products/akeneo-context-home-catalog.json) as an Akeneo-shaped offline source for four demo rugs, and the same identifiers can be pulled from local Akeneo REST with `SHOPIFY_DEMO_AKENEO_SOURCE=api` after `npm run akeneo:seed-rug`. Hydrogen keeps only a generic missing-media placeholder locally; storefront product names, descriptions, prices, attributes, and product-specific media are read from Shopify after Akeneo data has been projected.
 
 Metaobjects carry reusable governed concepts:
 

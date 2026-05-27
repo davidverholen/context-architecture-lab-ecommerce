@@ -1,7 +1,7 @@
 {
   "projection_id": "shopify-projection-rug-atlas-sand",
   "pim_product_id": "pim-rug-atlas-sand",
-  "shopify_status": "draft",
+  "shopify_status": "active",
   "title": "Atlas Wool Rug",
   "handle": "atlas-wool-rug-sand",
   "vendor": "Context Home",
@@ -17,12 +17,30 @@
       }
     }
   ],
+  "media": [
+    {
+      "role": "primary",
+      "filename": "atlas-wool-rug-primary.jpg",
+      "alt": "Atlas Wool Rug in Sand"
+    },
+    {
+      "role": "lifestyle",
+      "filename": "atlas-wool-rug-lifestyle.jpg",
+      "alt": "Atlas Wool Rug styled in a room"
+    }
+  ],
   "metafields": [
     {
       "namespace": "details",
       "key": "material",
       "type": "single_line_text_field",
       "value": "wool"
+    },
+    {
+      "namespace": "details",
+      "key": "shape",
+      "type": "single_line_text_field",
+      "value": "rectangle"
     },
     {
       "namespace": "details",
@@ -35,6 +53,18 @@
       "key": "suitable_rooms",
       "type": "list.single_line_text_field",
       "value": ["living_room", "bedroom"]
+    },
+    {
+      "namespace": "details",
+      "key": "origin_country",
+      "type": "single_line_text_field",
+      "value": "IN"
+    },
+    {
+      "namespace": "details",
+      "key": "style",
+      "type": "single_line_text_field",
+      "value": "modern organic"
     }
   ],
   "metaobjects": [

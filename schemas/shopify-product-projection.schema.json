@@ -48,6 +48,19 @@
         }
       }
     },
+    "media": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "filename"],
+        "properties": {
+          "role": { "type": "string", "enum": ["primary", "lifestyle"] },
+          "filename": { "type": "string" },
+          "alt": { "type": "string" }
+        }
+      }
+    },
     "metafields": {
       "type": "array",
       "items": {

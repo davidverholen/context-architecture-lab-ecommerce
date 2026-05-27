@@ -56,10 +56,13 @@
                 "pile_height_mm",
                 "care_instruction",
                 "suitable_rooms",
-                "style",
-                "origin_country"
-              ],
-              "properties": {
+              "style",
+              "origin_country"
+            ],
+            "properties": {
+                "merchandising_name": { "type": "string" },
+                "description": { "type": "string" },
+                "price": { "type": "number", "minimum": 0 },
                 "material": { "type": "string" },
                 "size": { "type": "string" },
                 "color": { "type": "string" },
@@ -72,7 +75,16 @@
                   "items": { "type": "string" }
                 },
                 "style": { "type": "string" },
-                "origin_country": { "type": "string", "pattern": "^[A-Z]{2}$" }
+                "origin_country": { "type": "string", "pattern": "^[A-Z]{2}$" },
+                "image_assets": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["primary"],
+                  "properties": {
+                    "primary": { "type": "string" },
+                    "lifestyle": { "type": "string" }
+                  }
+                }
               }
             }
           }

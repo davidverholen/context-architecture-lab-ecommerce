@@ -14,7 +14,7 @@ import type {
 } from 'storefrontapi.generated';
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: `Hydrogen | Search`}];
+  return [{title: `Context Home | Search`}];
 };
 
 export async function loader({request, context}: Route.LoaderArgs) {
@@ -41,23 +41,25 @@ export default function SearchPage() {
   if (type === 'predictive') return null;
 
   return (
-    <div className="search">
-      <h1>Search</h1>
-      <SearchForm>
-        {({inputRef}) => (
-          <>
-            <input
-              defaultValue={term}
-              name="q"
-              placeholder="Search…"
-              ref={inputRef}
-              type="search"
-            />
-            &nbsp;
-            <button type="submit">Search</button>
-          </>
-        )}
-      </SearchForm>
+    <div className="search page-shell">
+      <section className="collection-hero search-hero">
+        <p className="eyebrow">Search</p>
+        <h1>Find a rug by material, color, or room.</h1>
+        <SearchForm>
+          {({inputRef}) => (
+            <div className="collection-search">
+              <input
+                defaultValue={term}
+                name="q"
+                placeholder="Try wool, jute, ivory, bedroom..."
+                ref={inputRef}
+                type="search"
+              />
+              <button type="submit">Search</button>
+            </div>
+          )}
+        </SearchForm>
+      </section>
       {error && <p style={{color: 'red'}}>{error}</p>}
       {!term || !result?.total ? (
         <SearchResults.Empty />
@@ -90,6 +92,12 @@ const SEARCH_PRODUCT_FRAGMENT = `#graphql
     title
     trackingParameters
     vendor
+    material: metafield(namespace: "details", key: "material") {
+      value
+    }
+    style: metafield(namespace: "details", key: "style") {
+      value
+    }
     selectedOrFirstAvailableVariant(
       selectedOptions: []
       ignoreUnknownOptions: true
@@ -231,6 +239,7 @@ async function regularSearch({
     ...items
   }: {errors?: Array<{message: string}>} & RegularSearchQuery =
     await storefront.query(SEARCH_QUERY, {
+      cache: storefront.CacheNone(),
       variables: {...variables, term},
     });
 
@@ -399,6 +408,7 @@ async function predictiveSearch({
     errors,
   }: PredictiveSearchQuery & {errors?: Array<{message: string}>} =
     await storefront.query(PREDICTIVE_SEARCH_QUERY, {
+      cache: storefront.CacheNone(),
       variables: {
         // customize search options as needed
         limit,

@@ -4,6 +4,9 @@
   "sku": "RUG-ATLAS-170X240-SAND",
   "status": "approved",
   "attributes": {
+    "merchandising_name": "Atlas Wool Rug",
+    "description": "A hand-finished wool rug projected from governed PIM product data.",
+    "price": 349.0,
     "material": "wool",
     "size": "170x240 cm",
     "color": "sand",
@@ -12,6 +15,10 @@
     "care_instruction": "Vacuum regularly and spot clean with mild detergent.",
     "suitable_rooms": ["living_room", "bedroom"],
     "style": "modern organic",
-    "origin_country": "IN"
+    "origin_country": "IN",
+    "image_assets": {
+      "primary": "atlas-wool-rug-primary.jpg",
+      "lifestyle": "atlas-wool-rug-lifestyle.jpg"
+    }
   }
 }

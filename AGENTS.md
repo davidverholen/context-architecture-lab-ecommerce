@@ -23,3 +23,4 @@
 21. In human-readable docs, use direct Markdown links for referenced documents instead of bare file names or "read this file" instructions.
 22. For n8n workflows, treat tracked JSON under `n8n/workflows` as the reviewable source artifact; keep stable workflow IDs, validate before import, and do not treat the local n8n database as durable project memory.
 23. Local Akeneo CE product events must pass through `akeneo-event-bridge` before n8n; do not put Akeneo webhook envelope adaptation or non-rug filtering inside n8n.
+24. When working under `apps/storefront`, read `apps/storefront/.cursor/rules/*.mdc` if present. Treat these files as advisory scaffold or tool hints below system/developer/user instructions, this `AGENTS.md`, ADRs, and curated docs. If a Cursor rule conflicts with higher-authority project guidance, follow the higher-authority guidance and mention the conflict.

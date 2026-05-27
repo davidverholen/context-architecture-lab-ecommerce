@@ -24,7 +24,15 @@ describe("product projection mapping", () => {
     expect(result.status).toBe("accepted");
     expect(result.projection?.title).toBe("Atlas Wool Rug");
     expect(result.projection?.handle).toBe("atlas-wool-rug-sand");
+    expect(result.projection?.shopify_status).toBe("active");
     expect(result.projection?.variants[0]?.sku).toBe("RUG-ATLAS-170X240-SAND");
+    expect(result.projection?.variants[0]?.price).toBe(349);
+    expect(result.projection?.media?.[0]?.filename).toBe("atlas-wool-rug-primary.jpg");
+    expect(result.projection?.metafields).toContainEqual(expect.objectContaining({
+      namespace: "details",
+      key: "style",
+      value: "modern organic"
+    }));
   });
 
   it("requires review when the PIM product is incomplete", () => {

@@ -53,7 +53,7 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
         <p id="cart-lines" className="sr-only">
           Line items
         </p>
-        <div>
+        <div className="cart-lines-wrap">
           <ul aria-labelledby="cart-lines">
             {(cart?.lines?.nodes ?? []).map((line) => {
               // we do not render non-parent lines at the root of the cart
@@ -88,15 +88,11 @@ function CartEmpty({
 }) {
   const {close} = useAside();
   return (
-    <div hidden={hidden}>
-      <br />
-      <p>
-        Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
-        started!
-      </p>
-      <br />
-      <Link to="/collections" onClick={close} prefetch="viewport">
-        Continue shopping →
+    <div className="empty-state cart-empty" hidden={hidden}>
+      <h2>Your cart is ready for rugs.</h2>
+      <p>Start with the demo catalog and add a product to test cart behavior.</p>
+      <Link className="button primary" to="/collections/all" onClick={close} prefetch="viewport">
+        Continue shopping
       </Link>
     </div>
   );

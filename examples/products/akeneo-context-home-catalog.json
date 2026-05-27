@@ -1,0 +1,138 @@
+[
+  {
+    "export_id": "akeneo-context-home-atlas-wool-rug-2026-05-27",
+    "source": "akeneo-ce",
+    "event_type": "product.exported",
+    "occurred_at": "2026-05-27T12:00:00Z",
+    "product": {
+      "identifier": "RUG-ATLAS-170X240-SAND",
+      "family": "rug",
+      "enabled": true,
+      "completeness": {
+        "scope": "ecommerce",
+        "locale": "en_US",
+        "ratio": 100
+      },
+      "values": {
+        "merchandising_name": "Atlas Wool Rug",
+        "description": "A warm wool rug with a dense hand-finished surface, built for quiet living rooms and calm bedrooms.",
+        "price": 349,
+        "material": "wool",
+        "size": "170x240 cm",
+        "color": "sand",
+        "shape": "rectangle",
+        "pile_height_mm": 12,
+        "care_instruction": "Vacuum regularly and spot clean with mild detergent.",
+        "suitable_rooms": ["living_room", "bedroom"],
+        "style": "modern organic",
+        "origin_country": "IN",
+        "image_assets": {
+          "primary": "atlas-wool-rug-primary.jpg",
+          "lifestyle": "atlas-wool-rug-lifestyle.jpg"
+        }
+      }
+    }
+  },
+  {
+    "export_id": "akeneo-context-home-sora-jute-rug-2026-05-27",
+    "source": "akeneo-ce",
+    "event_type": "product.exported",
+    "occurred_at": "2026-05-27T12:01:00Z",
+    "product": {
+      "identifier": "RUG-SORA-200X300-NATURAL",
+      "family": "rug",
+      "enabled": true,
+      "completeness": {
+        "scope": "ecommerce",
+        "locale": "en_US",
+        "ratio": 100
+      },
+      "values": {
+        "merchandising_name": "Sora Jute Rug",
+        "description": "A grounded jute rug with visible natural fiber texture, designed to bring warmth to dining and everyday spaces.",
+        "price": 229,
+        "material": "jute",
+        "size": "200x300 cm",
+        "color": "natural",
+        "shape": "rectangle",
+        "pile_height_mm": 6,
+        "care_instruction": "Shake out outdoors and vacuum without a rotating brush.",
+        "suitable_rooms": ["dining_room", "living_room"],
+        "style": "natural minimal",
+        "origin_country": "IN",
+        "image_assets": {
+          "primary": "sora-jute-rug-primary.jpg",
+          "lifestyle": "sora-jute-rug-lifestyle.jpg"
+        }
+      }
+    }
+  },
+  {
+    "export_id": "akeneo-context-home-mira-cotton-rug-2026-05-27",
+    "source": "akeneo-ce",
+    "event_type": "product.exported",
+    "occurred_at": "2026-05-27T12:02:00Z",
+    "product": {
+      "identifier": "RUG-MIRA-140X200-IVORY",
+      "family": "rug",
+      "enabled": true,
+      "completeness": {
+        "scope": "ecommerce",
+        "locale": "en_US",
+        "ratio": 100
+      },
+      "values": {
+        "merchandising_name": "Mira Cotton Rug",
+        "description": "A soft cotton rug with a low woven texture and a light ivory tone, made for bedrooms and relaxed corners.",
+        "price": 179,
+        "material": "cotton",
+        "size": "140x200 cm",
+        "color": "ivory",
+        "shape": "rectangle",
+        "pile_height_mm": 8,
+        "care_instruction": "Vacuum gently and rotate regularly for even wear.",
+        "suitable_rooms": ["bedroom", "nursery"],
+        "style": "soft minimal",
+        "origin_country": "TR",
+        "image_assets": {
+          "primary": "mira-cotton-rug-primary.jpg",
+          "lifestyle": "mira-cotton-rug-lifestyle.jpg"
+        }
+      }
+    }
+  },
+  {
+    "export_id": "akeneo-context-home-rune-flatweave-rug-2026-05-27",
+    "source": "akeneo-ce",
+    "event_type": "product.exported",
+    "occurred_at": "2026-05-27T12:03:00Z",
+    "product": {
+      "identifier": "RUG-RUNE-160X230-TERRACOTTA",
+      "family": "rug",
+      "enabled": true,
+      "completeness": {
+        "scope": "ecommerce",
+        "locale": "en_US",
+        "ratio": 100
+      },
+      "values": {
+        "merchandising_name": "Rune Flatweave Rug",
+        "description": "A slim flatweave rug with terracotta warmth, made for reading corners, compact living rooms, and studios.",
+        "price": 269,
+        "material": "wool",
+        "size": "160x230 cm",
+        "color": "terracotta",
+        "shape": "rectangle",
+        "pile_height_mm": 5,
+        "care_instruction": "Vacuum without a beater bar and blot spills immediately.",
+        "suitable_rooms": ["living_room", "office"],
+        "style": "warm contemporary",
+        "origin_country": "PT",
+        "image_assets": {
+          "primary": "rune-flatweave-rug-primary.jpg",
+          "lifestyle": "rune-flatweave-rug-lifestyle.jpg"
+        }
+      }
+    }
+  }
+]
